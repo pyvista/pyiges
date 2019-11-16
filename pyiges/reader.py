@@ -1,4 +1,5 @@
-from pyiges.curves_surfaces import (Line, RationalBSplineCurve, RationalBSplineSurface)
+from pyiges.curves_surfaces import (Line, RationalBSplineCurve, RationalBSplineSurface,
+                                    CircularArc)
 from pyiges.entity import Entity
 from tqdm import tqdm
 
@@ -7,10 +8,8 @@ def read_entities(filename):
     with open(filename, 'r') as f:
 
         param_string = ''
-        # params = []
         entity_list = []
         entity_index = 0
-        # displayed = False
         first_dict_line = True
         first_global_line = True
         first_param_line = True
@@ -40,7 +39,7 @@ def read_entities(filename):
                     entity_type_number = int(data[0:8].strip())
                     # Curve and surface entities.  See IGES spec v5.3, p. 38, Table 3
                     if entity_type_number == 100:   # Circular arc
-                        e = Entity()
+                        e = CircularArc()
                     elif entity_type_number == 102: # Composite curve
                         e = Entity()
                     elif entity_type_number == 104: # Conic arc
@@ -127,7 +126,7 @@ def read_entities(filename):
                     first_param_line = True
                     param_string = param_string.strip()[:-1]
                     parameters = param_string.split(param_sep)
-                    entity_list[pointer_dict[directory_pointer]].add_parameters(parameters)
+                    entity_list[pointer_dict[directory_pointer]]._add_parameters(parameters)
 
             elif id_code == 'T':   # Terminate
                 pass

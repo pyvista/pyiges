@@ -42,5 +42,5 @@ class Entity():
 
         return s
 
-    def add_parameters(self, parameters):
+    def _add_parameters(self, parameters):
         self.parameters.append(parameters)

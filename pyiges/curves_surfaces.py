@@ -1,17 +1,17 @@
-#!/usr/bin/env python
-from pyiges.entity import Entity
 import os
 
 from geomdl import NURBS, BSpline, utilities
 import numpy as np
-
+import vtk
 import pyvista as pv
+
+from pyiges.entity import Entity
 
 
 class Line(Entity):
     """Straight line segment"""
 
-    def add_parameters(self, parameters):
+    def _add_parameters(self, parameters):
         self.x1 = float(parameters[1])
         self.y1 = float(parameters[2])
         self.z1 = float(parameters[3])
@@ -26,6 +26,10 @@ class Line(Entity):
         s += "To point {0}, {1}, {2}".format(self.x2, self.y2, self.z2)
         return s
 
+    def to_vtk(self, resolution=1):
+        return pv.Line([self.x1, self.y1, self.z1],
+                       [self.x2, self.y2, self.z2], resolution)
+
 
 class RationalBSplineCurve(Entity):
     """Rational B-Spline Curve
@@ -33,7 +37,7 @@ class RationalBSplineCurve(Entity):
     See also Appendix B, p. 545
     """
 
-    def add_parameters(self, parameters):
+    def _add_parameters(self, parameters):
         self.K = int(parameters[1])
         self.M = int(parameters[2])
         self.prop1 = int(parameters[3])
@@ -85,8 +89,7 @@ class RationalBSplineCurve(Entity):
         return s
 
     def to_vtk(self, delta=0.01):
-        """
-        Set evaluation delta (controls the number of curve points)
+        """Set evaluation delta (controls the number of curve points)
         """
         # Create a 3-dimensional B-spline Curve
         curve = NURBS.Curve()
@@ -102,7 +105,7 @@ class RationalBSplineCurve(Entity):
 
 class RationalBSplineSurface(Entity):
 
-    def add_parameters(self, input_parameters):
+    def _add_parameters(self, input_parameters):
         parameters = np.empty(len(input_parameters))
         parameters[:] = input_parameters
 
@@ -165,3 +168,47 @@ class RationalBSplineSurface(Entity):
             faces.extend([3] + face.vertex_ids)
 
         return pv.PolyData(np.array(surf.vertices), np.array(faces))
+
+
+class CircularArc(Entity):
+    """Circular Arc
+
+    Type 100: Simple circular arc of constant radius. Usually defined
+    with a Transformation Matrix Entity (Type 124).
+
+    Notes
+    -----
+    Index in list    Type of data    Name    Description
+    1                REAL            Z       z displacement on XT,YT plane
+    2                REAL            X       x coordinate of center
+    3                REAL            Y       y coordinate of center
+    4                REAL            X1      x coordinate of start
+    5                REAL            Y1      y coordinate of start
+    6                REAL            X2      x coordinate of end
+    7                REAL            Y2      y coordinate of end
+    """
+
+    def _add_parameters(self, parameters):
+        self.z = float(parameters[1])
+        self.y = float(parameters[2])
+        self.x = float(parameters[3])
+        self.x1 = float(parameters[4])
+        self.y1 = float(parameters[5])
+        self.x2 = float(parameters[6])
+        self.y2 = float(parameters[7])
+
+    def to_vtk(self, resolution=20):
+        arc = pv.CircularArc([self.x1, self.y1, 0],
+                             [self.x2, self.y2, 0],
+                             [self.x, self.y, 0],
+                             resolution=resolution,
+                             normal=[0, 0, 1])
+        return arc.extrude([0, 0, self.z])
+
+    def __repr__(self):
+        info = 'Circular Arc\nIGES Type 100\n'
+        info += 'Center: (%f, %f)\n' % (self.x, self.y)
+        info += 'Start:  (%f, %f)\n' % (self.x1, self.y1)
+        info += 'End:    (%f, %f)\n' % (self.x2, self.y2)
+        info += 'Z Disp: %f' % self.z
+        return info
