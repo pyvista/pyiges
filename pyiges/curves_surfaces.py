@@ -31,6 +31,70 @@ class Line(Entity):
                        [self.x2, self.y2, self.z2], resolution)
 
 
+class ConicArc(Entity):
+    """Conic Arc (Type 104)
+    Arc defined by the equation: Axt^2 + Bxtyt + Cyt^2 + Dxt + Eyt
+    + F = 0, with a Transformation Matrix (Entity 124). Can define
+    an ellipse, parabola, or hyperbola.
+
+    The definitions of the terms ellipse, parabola, and hyperbola
+    are given in terms of the quantities Q1, Q2, and Q3. These
+    quantities are:
+
+        |  A   B/2  D/2 |        |  A   B/2 | 
+    Q1= | B/2   C   E/2 |   Q2 = | B/2   C  |   Q3 = A + C 
+        | D/2  E/2   F  | 
+    A parent conic curve is:
+
+    An ellipse if Q2 > 0 and Q1, Q3 < 0.
+    A hyperbola if Q2 < 0 and Q1 != 0.
+    A parabola if Q2 = 0 and Q1 != 0.
+    """
+
+    def _add_parameters(self, parameters):
+        """
+        Index	Type	Name	Description
+        1	REAL	A	coefficient of xt^2
+        2	REAL	B	coefficient of xtyt
+        3	REAL	C	coefficient of yt^2
+        4	REAL	D	coefficient of xt
+        5	REAL	E	coefficient of yt
+        6	REAL	F	scalar coefficient
+        7	REAL	X1	x coordinate of start point
+        8	REAL	Y1	y coordinate of start point
+        9	REAL	Z1	z coordinate of start point
+        10	REAL	X2	x coordinate of end point
+        11	REAL	Y2	y coordinate of end point
+        12	REAL	Z2	z coordinate of end point
+        """
+        self.a = parameters[1]  #  coefficient of xt^2
+        self.b = parameters[2]  #  coefficient of xtyt
+        self.c = parameters[3]  #  coefficient of yt^2
+        self.d = parameters[4]  #  coefficient of xt
+        self.e = parameters[5]  #  coefficient of yt
+        self.f = parameters[6]  #  scalar coefficient
+        self.x1 = parameters[7]  #  x coordinate of start point
+        self.y1 = parameters[8]  #  y coordinate of start point
+        self.z1 = parameters[9]  #  z coordinate of start point
+        self.x2 = parameters[10]  #  x coordinate of end point
+        self.y2 = parameters[11]  #  y coordinate of end point
+        self.z2 = parameters[12]  #  z coordinate of end point
+
+    def __repr__(self):
+        info = 'Conic Arc\nIGES Type 104\n'
+        info += 'Start:  (%f, %f, %f)\n' % (self.x1, self.y1, self.z1)
+        info += 'End:    (%f, %f, %f)\n' % (self.x2, self.y2, self.z2)
+        info += 'Coefficient of xt^2: %f' % self.a
+        info += 'Coefficient of xtyt: %f' % self.b
+        info += 'Coefficient of yt^2: %f' % self.c
+        info += 'Coefficient of xt:   %f' % self.d
+        info += 'Coefficient of yt:   %f' % self.e
+        info += 'Scalar coefficient:  %f' % self.f
+        return info
+
+    def to_vtk(self):
+        raise NotImplementedError('Not yet implemented')
+
 class RationalBSplineCurve(Entity):
     """Rational B-Spline Curve
     IGES Spec v5.3 p. 123 Section 4.23

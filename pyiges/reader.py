@@ -1,5 +1,5 @@
 from pyiges.curves_surfaces import (Line, RationalBSplineCurve, RationalBSplineSurface,
-                                    CircularArc)
+                                    CircularArc, ConicArc)
 from pyiges.entity import Entity
 from tqdm import tqdm
 
@@ -43,7 +43,7 @@ def read_entities(filename):
                     elif entity_type_number == 102: # Composite curve
                         e = Entity()
                     elif entity_type_number == 104: # Conic arc
-                        e = Entity()
+                        e = ConicArc()
                     elif entity_type_number == 108: # Plane
                         e = Entity()
                     elif entity_type_number == 110: # Line
