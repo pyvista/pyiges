@@ -54,4 +54,4 @@ Sample impeller was obtained from http://3dgallery.gks.com/2013/impeller/igs.php
 
 Substantial code was obtained from or inspired by https://github.com/cfinch/IGES-File-Reader
 
-IGES reference definitions were obtained from https://wiki.eclipse.org/IGES_file_Specification#Rational_B-Spline_Curve_.28Type_126.29
+IGES reference definitions were obtained from `Eclipse IGES Wiki <https://wiki.eclipse.org/IGES_file_Specification#Rational_B-Spline_Curve_.28Type_126.29>`_,
