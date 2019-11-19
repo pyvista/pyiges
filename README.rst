@@ -1,13 +1,14 @@
 pyIGES
 ======
-Python IGES reader with basic functionality to read an IGES file and convert some entities to a ``pyvista`` or ``vtk`` mesh.
+Python IGES reader with basic functionality to read an IGES file and convert
+some entities to a ``pyvista`` or ``vtk`` mesh.
 
 
 Installation
 ------------
 Clone this repo and install with:
 
-.. code::
+.. code:: bash
 
    git clone https://github.com/pyvista/pyiges
    cd pyiges
@@ -16,9 +17,10 @@ Clone this repo and install with:
 
 Usage
 -----
-The ``pyiges`` module can read in many entities as raw text, but only NURBS surfaces and bsplines can be converted to ``pyvista`` meshes.
+The ``pyiges`` module can read in many entities as raw text, but only NURBS
+surfaces and bsplines can be converted to ``pyvista`` meshes.
 
-.. code::
+.. code:: python
 
     import pyiges
     from pyiges import examples
