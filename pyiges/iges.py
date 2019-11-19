@@ -30,7 +30,7 @@ class Iges():
 
             return pyvista.wrap(afilter.GetOutput())
 
-        return items
+        return pyvista.MultiBlock(items)
 
     @property
     def bsplines(self):
