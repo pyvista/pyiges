@@ -14,7 +14,7 @@ class Iges():
 
     def to_vtk(self, bsplines=True, surfaces=True, delta=0.025, merge=True):
         """Converts entities to vtk object"""
-        items = []
+        items = pyvista.MultiBlock()
         for entity in tqdm(self, desc='Converting entities to vtk'):
             if isinstance(entity, RationalBSplineCurve) and bsplines:
                 items.append(entity.to_vtk(delta))
@@ -30,7 +30,7 @@ class Iges():
 
             return pyvista.wrap(afilter.GetOutput())
 
-        return pyvista.MultiBlock(items)
+        return items
 
     @property
     def bsplines(self):
