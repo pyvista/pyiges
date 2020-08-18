@@ -8,6 +8,24 @@ import pyvista as pv
 from pyiges.entity import Entity
 
 
+class Point(Entity):
+    """Straight line segment"""
+
+    def _add_parameters(self, parameters):
+        self.x = float(parameters[1])
+        self.y = float(parameters[2])
+        self.z = float(parameters[3])
+
+    def __str__(self):
+        s = '--- Point ---' + os.linesep
+        s += Entity.__str__(self) + os.linesep
+        s += "{0}, {1}, {2} {3}".format(self.x, self.y, self.z, os.linesep)
+        return s
+
+    def to_vtk(self):
+        return pv.PolyData([self.x, self.y, self.z])
+
+
 class Line(Entity):
     """Straight line segment"""
 
@@ -33,8 +51,10 @@ class Line(Entity):
 
 class ConicArc(Entity):
     """Conic Arc (Type 104)
-    Arc defined by the equation: Axt^2 + Bxtyt + Cyt^2 + Dxt + Eyt
-    + F = 0, with a Transformation Matrix (Entity 124). Can define
+    Arc defined by the equation: 
+    ``A*x**2 + B*x*y + C*y**2 + D*x + E*y + F = 0``
+
+    with a Transformation Matrix (Entity 124). Can define
     an ellipse, parabola, or hyperbola.
 
     The definitions of the terms ellipse, parabola, and hyperbola
@@ -84,16 +104,34 @@ class ConicArc(Entity):
         info = 'Conic Arc\nIGES Type 104\n'
         info += 'Start:  (%f, %f, %f)\n' % (self.x1, self.y1, self.z1)
         info += 'End:    (%f, %f, %f)\n' % (self.x2, self.y2, self.z2)
-        info += 'Coefficient of xt^2: %f' % self.a
-        info += 'Coefficient of xtyt: %f' % self.b
-        info += 'Coefficient of yt^2: %f' % self.c
-        info += 'Coefficient of xt:   %f' % self.d
-        info += 'Coefficient of yt:   %f' % self.e
+        info += 'Coefficient of x**2: %f' % self.a
+        info += 'Coefficient of x*y:  %f' % self.b
+        info += 'Coefficient of y**2: %f' % self.c
+        info += 'Coefficient of x:    %f' % self.d
+        info += 'Coefficient of y:    %f' % self.e
         info += 'Scalar coefficient:  %f' % self.f
         return info
 
     def to_vtk(self):
+
+        # a*x**2 + b*x*y + c*y**2 + d*x + e*y + f = 0
+        # from sympy import Symbol
+        # from sympy.solvers import Solve
+        # a = Symbol('a')
+        # b = Symbol('b')
+        # c = Symbol('c')
+        # d = Symbol('d')
+        # e = Symbol('e')
+        # f = Symbol('f')
+        # x = Symbol('x')
+        # y = Symbol('y')
+        # solve(a*x**2 + b*x*y + c*y**2 + d*x + e*y + f, x)
+
+        # x0 = (-b*y - d + sqrt(-4*a*c*y**2 - 4*a*e*y - 4*a*f + b**2*y**2 + 2*b*d*y + d**2))/(2*a)
+        # x1 = -(b*y + d + sqrt(-4*a*c*y**2 - 4*a*e*y - 4*a*f + b**2*y**2 + 2*b*d*y + d**2))/(2*a)
+
         raise NotImplementedError('Not yet implemented')
+
 
 class RationalBSplineCurve(Entity):
     """Rational B-Spline Curve
@@ -152,19 +190,29 @@ class RationalBSplineCurve(Entity):
             s += "Unit normal: {0} {1} {2}".format(self.XNORM, self.YNORM, self.ZNORM)
         return s
 
+    def to_geomdl(self):
+        curve = NURBS.Curve()
+        curve.degree = self.M
+        curve.ctrlpts = self.control_points
+        curve.weights = self.W + [1]
+        curve.knotvector = self.T  # Set knot vector
+        return curve
+
     def to_vtk(self, delta=0.01):
         """Set evaluation delta (controls the number of curve points)
         """
         # Create a 3-dimensional B-spline Curve
-        curve = NURBS.Curve()
-        curve.degree = self.M
-        curve.ctrlpts = self.control_points  # Set control points (weights vector will be 1 by default)
-        curve.weights = self.W + [1]
-        curve.knotvector = self.T  # Set knot vector
+        curve = self.to_geomdl()
         curve.delta = delta
-        curve_points = np.array(curve.evalpts)
 
-        return pv.Spline(curve_points)
+        # spline segfaults here sometimes...
+        # return pv.Spline(np.array(curve.evalpts))
+        faces = np.arange(-1, 100)
+        faces[0] = 100
+        line = pv.PolyData()
+        line.points = np.array(curve.evalpts)
+        line.lines = faces
+        return line
 
 
 class RationalBSplineSurface(Entity):
@@ -203,26 +251,27 @@ class RationalBSplineSurface(Entity):
         self.v0 = parameters[-1]  # Start second parameter value
         self.v1 = parameters[-0]  # End second parameter value
 
-    def to_vtk(self, delta=0.025):
-        
+    def to_geomdl(self):
         surf = BSpline.Surface()
 
         # Set degrees
         surf.degree_u = self.m2
         surf.degree_v = self.m1
 
+        # set control points and knots
         cp2d = self.cp.reshape(self.k2 + 1, self.k1 + 1, 3)
         surf.ctrlpts2d = cp2d.tolist()
-
-        # surf.knotvector_u = utilities.generate_knot_vector(surf.degree_u, surf.ctrlpts_size_u)
         surf.knotvector_u = self.knot2
         surf.knotvector_v = self.knot1
-        # surf.knotvector_v = utilities.generate_knot_vector(surf.degree_v, surf.ctrlpts_size_v)
 
+        # set weights
+        surf.weights = self.weights
+        return surf
+
+    def to_vtk(self, delta=0.025):
+        surf = self.to_geomdl()
         # Set evaluation delta
         surf.delta = delta
-
-        surf.weights = self.weights
 
         # Evaluate surface points
         surf.evaluate()
@@ -254,20 +303,23 @@ class CircularArc(Entity):
 
     def _add_parameters(self, parameters):
         self.z = float(parameters[1])
-        self.y = float(parameters[2])
-        self.x = float(parameters[3])
+        self.x = float(parameters[2])
+        self.y = float(parameters[3])
         self.x1 = float(parameters[4])
         self.y1 = float(parameters[5])
         self.x2 = float(parameters[6])
         self.y2 = float(parameters[7])
 
     def to_vtk(self, resolution=20):
-        arc = pv.CircularArc([self.x1, self.y1, 0],
-                             [self.x2, self.y2, 0],
-                             [self.x, self.y, 0],
-                             resolution=resolution,
-                             normal=[0, 0, 1])
-        return arc.extrude([0, 0, self.z])
+        start = [self.x1, self.y1, 0]
+        end = [self.x2, self.y2, 0]
+        center = [self.x, self.y, 0],
+        arc = pv.CircularArc(center=center,
+                             pointa=start,
+                             pointb=end,
+                             resolution=resolution)
+        arc.points += [0, 0, self.z]
+        return arc
 
     def __repr__(self):
         info = 'Circular Arc\nIGES Type 100\n'
@@ -276,3 +328,184 @@ class CircularArc(Entity):
         info += 'End:    (%f, %f)\n' % (self.x2, self.y2)
         info += 'Z Disp: %f' % self.z
         return info
+
+
+class Face(Entity):
+    """Defines a bound portion of three dimensional space (R^3) which
+    has a finite area. Used to construct B-Rep Geometries."""
+
+    def _add_parameters(self, parameters):
+        """
+        Parameter Data
+        Index	Type	Name	Description
+        Pointer	Surface	Underlying surface
+        2	INT	N	Number of loops
+        3	BOOL	Flag	Outer loop flag:
+                                True indicates Loop1 is outer loop.
+                                False indicates no outer loop.
+        4	Pointer	Loop1	Pointer to first loop of the face
+        3+N	Pointer	LoopN	Pointer to last loop of the face
+        """
+        self.surf_pointer = int(parameters[1])
+        self.n_loops = int(parameters[2])
+        self.outer_loop_flag = bool(parameters[3])
+
+        self.loop_pointers = []
+        for i in range(self.n_loops):
+            self.loop_pointers.append(int(parameters[4 + i]))
+
+    @property
+    def loops(self):
+        loops = []
+        for ptr in self.loop_pointers:
+            loops.append(self.iges.from_pointer(ptr))
+
+        return loops
+
+    def __repr__(self):
+        info = 'IGES Type 510: Face\n'
+        # info += 'Center: (%f, %f)\n' % (self.x, self.y)
+        # info += 'Start:  (%f, %f)\n' % (self.x1, self.y1)
+        # info += 'End:    (%f, %f)\n' % (self.x2, self.y2)
+        # info += 'Z Disp: %f' % self.z
+        return info
+
+
+class Loop(Entity):
+    """Defines a loop, specifying a bounded face, for B-Rep
+    Geometries."""
+
+    def _add_parameters(self, parameters):
+        """Parameter Data
+        Index   Type    Name                Description
+        1       INT     N                   N Edges in loop
+        2	INT	Type1	            Type of Edge 1
+                                            0 = Edge
+                                            1 = Vertex
+        3	Pointer	E1                  First vertex list or edge list
+        4	INT	Index1              Index of edge/vertex in E1
+        5	BOOL	Flag1               Orientation flag -
+                                            True = Agrees with model curve
+        6	INT	K1                  Number of parametric space curves
+        7	BOOL	ISO(1, 1)           Isoparametric flag of first
+                                            parameter space curve
+        8	Pointer	PSC(1, 1)           First parametric space curve of E1
+        .
+        6+2K1	Pointer	PSC(1, K1)          Last parametric space curve of E1
+        7+2K1	INT	Type2               Type of Edge 2
+        """
+        self.parameters = parameters
+        self.n_edges = int(self.parameters[1])
+        self._edges = []
+
+        c = 0
+        for i in range(self.n_edges):
+            edge = {'type': int(self.parameters[2 + c]),
+                    'e1': int(self.parameters[3 + c]),  # first vertex or edge list
+                    'index1': int(self.parameters[4 + c]),  # index of edge in e1
+                    'flag1': bool(self.parameters[5 + c]),  # orientation flag
+                    'k1': int(self.parameters[6 + c])}  # n curves
+            curves = []
+            for j in range(edge['k1']):
+                curve = {'iso': bool(self.parameters[7 + c + j*2]),  # isopara flag
+                         'psc': int(self.parameters[8 + c + j*2])}  # space curve
+                curves.append(curve)
+            c += 5 + 2*edge['k1']
+
+            edge['curves'] = curves
+            self._edges.append(edge)
+
+    # @property
+    # def edge_lists(self):
+    #     for 
+
+    def curves(self):
+        """list of curves"""
+        pass
+
+    def __repr__(self):
+        info = 'IGES Type 508: Loop\n'
+        return info
+
+
+class EdgeList(Entity):
+    """Provides a list of edges, comprised of vertices, for specifying
+    B-Rep Geometries."""
+    _iges_type = 504
+
+    def _add_parameters(self, parameters):
+        """
+        Parameter Data
+        Index in list	Type of data	Name	Description
+        INT	N	Number of Edges in list
+        2	Pointer	Curve1	First model space curve
+        3	Pointer	SVL1	Vertex list for start vertex
+        4	INT	S1	Index of start vertex in SVL1
+        5	Pointer	EVL1	Vertex list for end vertex
+        6	INT	E1	Index of end vertex in EVL1
+        .
+        .	.
+        .	.
+        .	
+        5N-3	Pointer	CurveN	First model space curve
+        5N-2	Pointer	SVLN	Vertex list for start vertex
+        5N-1	INT	SN	Index of start vertex in SVLN
+        5N	Pointer	EVLN	Vertex list for end vertex
+        5N+1	INT	EN	Index of end vertex in EVLN
+        """
+        self.parameters = parameters
+        self.n_edges = int(parameters[1])
+
+        self.edges = []
+        for i in range(self.n_edges):
+            edge = {'curve1': int(parameters[2 + 5*i]),  # first model space curve
+                    'svl': int(parameters[3 + 5*i]),  # vertex list for start vertex
+                    's': int(parameters[4 + 5*i]),  # start index
+                    'evl': int(parameters[5 + 5*i]), # vertex list for end vertex
+                    'e': int(parameters[6 + 5*i])} # index of end vertex in evl n
+            self.edges.append(edge)
+
+    # @property
+    # def curve(self, ):
+    #     for
+
+    def __getitem__(self, indices):
+        # TODO: limit spline based on start and end point
+        ptr = self.edges[indices]['curve1']
+        return self.iges.from_pointer(ptr)
+
+    def __len__(self):
+        return len(self.edges)
+
+    def __repr__(self):
+        info = 'IGES Type %d: Edge List\n' % self._iges_type
+        return info
+
+
+class VertexList(Entity):
+    """Vertex List (Type 502 Form 1)"""
+    _iges_type = 502
+
+    def _add_parameters(self, parameters):
+        """Parameter Data
+        Index in list	Type of data	Name	Description
+        INT	N	Number of vertices in list
+        2	REAL	X1	Coordinates of first vertex
+        3	REAL	Y1
+        4	REAL	Z1
+        .
+        .	.
+        .	.
+        .
+        3N-1	REAL	XN	Coordinates of last vertex
+        3N	REAL	YN
+        3N+1	REAL	ZN
+        """
+        self.parameters = parameters
+        self.n_points = int(parameters[1])
+        self.points = []
+        for i in range(self.n_points):
+            point = [float(self.parameters[2 + i*3]),
+                     float(self.parameters[3 + i*3]),
+                     float(self.parameters[4 + i*3])]
+            self.points.append(point)

@@ -8,9 +8,10 @@ def process_global_section(global_string):
 
 class Entity():
 
-    def __init__(self):
+    def __init__(self, iges):
         self.d = dict()
         self.parameters = []
+        self.iges = iges
 
     def add_section(self, string, key, type='int'):
         string = string.strip()
