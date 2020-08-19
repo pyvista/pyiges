@@ -1,7 +1,22 @@
 pyIGES
 ======
-Python IGES reader with basic functionality to read an IGES file and convert some entities to a ``pyvista`` or ``vtk`` mesh.
+Python IGES reader with basic functionality to read an IGES file and
+convert some entities to a ``pyvista`` or ``vtk`` mesh.
 
+This module can read in and perform basic parsing of all entities and
+can perform additional parsing and geometry visualization of the
+following entities:
+
+- Vertex List (Type 502 Form 1)
+- Edge List
+- Loop (for specifying a bounded face for BREP geometries
+- Face
+- Circular arc
+- Rational B-Spline Surface
+- Rational B-Spline Curve
+- Conic Arc (Type 104)
+- Line
+- Point
 
 Installation
 ------------

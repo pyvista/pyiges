@@ -7,15 +7,84 @@ from pyiges import geometry
 
 
 class Iges():
-    """IGES object"""
+    """pyiges.Iges object
+
+    Parameters
+    ----------
+    filename : str
+        Filename of an IGES file.
+
+    Examples
+    --------
+    >>> import pyiges
+    >>> from pyiges import examples
+    >>> iges = pyiges.read(examples.impeller)
+        pyiges.Iges object
+        Description:
+        Number of Entities: 4615
+    """
 
     def __init__(self, filename):
         self._read(filename)
         self._desc = ''
 
+    def entities(self):
+        """Return a list of all entities
+
+        Examples
+        --------
+        >>> iges.entities
+        [<pyiges.geometry.Point at 0x7f7056069c10>,
+         <pyiges.geometry.Point at 0x7f7056069790>,
+         <pyiges.geometry.Point at 0x7f7056069a50>,
+         <pyiges.geometry.Point at 0x7f7056069b10>,
+         <pyiges.entity.Entity at 0x7f7056069910>]
+        """
+
     def to_vtk(self, lines=True, bsplines=True,
                surfaces=True, points=True, delta=0.025, merge=True):
-        """Converts entities to vtk object"""
+        """Converts entities to a vtk object
+
+        Parameters
+        ----------
+        lines : bool, optional
+            Convert lines.
+
+        lines : bool, optional
+            Convert B-Spline entities.
+
+        surfaces : bool, optional
+            Convert B-Spline surfaces.
+
+        points : bool, optional
+            Convert points.
+
+        delta : float, optional
+            Resolution when converting spline entities.  Higher
+            resolution creates a better plot at the cost of computing
+            time.
+
+        merge : bool, optional
+            Merge all converted entites into one output.
+
+        Returns
+        -------
+        surf : pyvista.PolyData
+            Geometry represented as ``pyvista.PolyData``.
+
+        Examples
+        --------
+        Convert all entities except for surfaces to vtk
+        >>> lines = iges.to_vtk(surfaces=False)
+        >>> print(lines)
+        PolyData (0x7f700c79f3d0)
+          N Cells:	2440
+          N Points:	96218
+          X Bounds:	-4.299e+01, 6.912e+14
+          Y Bounds:	-4.255e+01, 6.290e+14
+          Z Bounds:	-9.980e+02, 6.702e+14
+          N Arrays:	0
+        """
         items = []
         for entity in tqdm(self, desc='Converting entities to vtk'):
             if isinstance(entity, geometry.RationalBSplineCurve) and bsplines:
@@ -60,7 +129,18 @@ class Iges():
                                  **kwargs)
 
     def bspline_surfaces(self, as_vtk=False, merge=False, **kwargs):
-        """All bsplines"""
+        """All bsplines
+
+        Examples
+        --------
+        Convert and plot all bspline surfaces.  This takes a while
+        since the geometry tessellation is done in pure python by
+        geomdl.  Reduce the conversion time by setting delta to a
+        larger than default value (0.025)
+
+        >>> mesh = iges.bspline_surfaces(as_vtk=True, merge=True)
+        >>> mesh.plot()
+        """
         return self._return_type(geometry.RationalBSplineSurface, as_vtk, merge,
                                  **kwargs)
 
@@ -78,9 +158,8 @@ class Iges():
         return self._return_type(geometry.Loop, as_vtk, merge,**kwargs)
 
     def _return_type(self, iges_type, to_vtk=False, merge=False, **kwargs):
-        """Return all of an iges type"""
+        """Return an iges type"""
         items = []
-        # for entity in tqdm(self, desc='Loading %s' % str(iges_type)):
         for entity in (self):
             if isinstance(entity, iges_type):
                 if to_vtk:
@@ -257,5 +336,21 @@ class Iges():
 
 
 def read(filename):
-    """Read an iges file"""
+    """Read an iges file.
+
+
+    Parameters
+    ----------
+    filename : str
+        Filename of an IGES file.
+
+    Examples
+    --------
+    >>> import pyiges
+    >>> from pyiges import examples
+    >>> iges = pyiges.read(examples.impeller)
+        pyiges.Iges object
+        Description:
+        Number of Entities: 4615
+    """
     return Iges(filename)

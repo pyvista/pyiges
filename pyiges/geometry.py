@@ -1,8 +1,7 @@
 import os
 
-from geomdl import NURBS, BSpline, utilities
+from geomdl import NURBS, BSpline
 import numpy as np
-import vtk
 import pyvista as pv
 
 from pyiges.entity import Entity
@@ -373,7 +372,7 @@ class Face(Entity):
 
 class Loop(Entity):
     """Defines a loop, specifying a bounded face, for B-Rep
-    Geometries."""
+    geometries."""
 
     def _add_parameters(self, parameters):
         """Parameter Data
