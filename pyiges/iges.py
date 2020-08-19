@@ -50,9 +50,6 @@ class Iges():
         lines : bool, optional
             Convert lines.
 
-        lines : bool, optional
-            Convert B-Spline entities.
-
         surfaces : bool, optional
             Convert B-Spline surfaces.
 
@@ -69,8 +66,9 @@ class Iges():
 
         Returns
         -------
-        surf : pyvista.PolyData
-            Geometry represented as ``pyvista.PolyData``.
+        surf : pyvista.PolyData or pyvista.MultiBlock
+            Geometry represented as ``pyvista.PolyData`` if merged or
+            a ``MultiBlock`` if unmerged.
 
         Examples
         --------
@@ -85,7 +83,7 @@ class Iges():
           Z Bounds:	-9.980e+02, 6.702e+14
           N Arrays:	0
         """
-        items = []
+        items = pyvista.MultiBlock()
         for entity in tqdm(self, desc='Converting entities to vtk'):
             if isinstance(entity, geometry.RationalBSplineCurve) and bsplines:
                 items.append(entity.to_vtk(delta))

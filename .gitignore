@@ -21,6 +21,7 @@ dist/
 
 # MISC
 # *.sh
+# *flycheck*
 
 # doc generated
 docs/_build

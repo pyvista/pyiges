@@ -30,7 +30,7 @@ Install with pip using:
 Otherwise, if you want the bleeding edge version, feel free to clone
 this repo and install with:
 
-.. code::
+.. code:: bash
 
    git clone https://github.com/pyvista/pyiges
    cd pyiges
@@ -42,7 +42,7 @@ Usage
 The ``pyiges`` module can read in many entities as raw text, but only
 NURBS surfaces and bsplines can be converted to ``pyvista`` meshes.
 
-.. code::
+.. code:: python
 
     import pyiges
     from pyiges import examples
