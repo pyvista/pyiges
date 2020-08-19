@@ -18,20 +18,29 @@ following entities:
 - Line
 - Point
 
+
 Installation
 ------------
-Clone this repo and install with:
+Install with pip using:
+
+.. code::
+
+   pip install pyiges
+
+Otherwise, if you want the bleeding edge version, feel free to clone
+this repo and install with:
 
 .. code::
 
    git clone https://github.com/pyvista/pyiges
    cd pyiges
-   pip install . --user
+   pip install .
 
 
 Usage
 -----
-The ``pyiges`` module can read in many entities as raw text, but only NURBS surfaces and bsplines can be converted to ``pyvista`` meshes.
+The ``pyiges`` module can read in many entities as raw text, but only
+NURBS surfaces and bsplines can be converted to ``pyvista`` meshes.
 
 .. code::
 
@@ -58,9 +67,16 @@ The ``pyiges`` module can read in many entities as raw text, but only NURBS surf
     mesh.save('mesh.stl')  # as stl
     mesh.save('mesh.vtk')  # as vtk
 
+
+Lines
+~~~~~
 .. image:: https://github.com/pyvista/pyiges/raw/master/docs/images/impeller_lines.png
 
+
+Surfaces
+~~~~~~~~
 .. image:: https://github.com/pyvista/pyiges/raw/master/docs/images/impeller_surf.png
+
 
 
 Acknowledgments
