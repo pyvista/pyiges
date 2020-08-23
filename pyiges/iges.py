@@ -73,6 +73,7 @@ class Iges():
         Examples
         --------
         Convert all entities except for surfaces to vtk
+
         >>> lines = iges.to_vtk(surfaces=False)
         >>> print(lines)
         PolyData (0x7f700c79f3d0)
@@ -133,11 +134,34 @@ class Iges():
         --------
         Convert and plot all bspline surfaces.  This takes a while
         since the geometry tessellation is done in pure python by
-        geomdl.  Reduce the conversion time by setting delta to a
+        ``geomdl``.  Reduce the conversion time by setting delta to a
         larger than default value (0.025)
 
         >>> mesh = iges.bspline_surfaces(as_vtk=True, merge=True)
         >>> mesh.plot()
+
+        Alternatively, just extract the B-REP surfaces and extract
+        their parameters
+
+        >>> bsurf = iges.bspline_surfaces()
+        >>> bsurf[0]
+        Rational B-Spline Surface
+            Upper index of first sum:        3
+            Upper index of second sum:       3
+            Degree of first basis functions: 3
+            Degree of second basis functions: 3
+            Open in the first direction
+            Open in the second direction
+            Polynomial
+            Periodic in the first direction
+            Periodic in the second direction
+            Knot 1: [0. 0. 0. 0. 1. 1. 1. 1.]
+            Knot 2: [0. 0. 0. 0. 1. 1. 1. 1.]
+            u0: 1.000000
+            u1: 0.000000
+            v0: 1.000000
+            v1: 128.000000
+            Control Points: 16
         """
         return self._return_type(geometry.RationalBSplineSurface, as_vtk, merge,
                                  **kwargs)
@@ -221,10 +245,6 @@ class Iges():
                         param_sep = data[2]
                         record_sep = data[6]
                         first_global_line = False
-
-                    # Record separator denotes end of global section
-                    # if global_string.strip()[-1] == record_sep:
-                    #     process_global_section(global_string)
 
                 elif id_code == 'D':   # Directory entry
                     if first_dict_line:

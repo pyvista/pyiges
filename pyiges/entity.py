@@ -1,12 +1,35 @@
-#!/usr/bin/env python
 import os
 from pyiges.constants import line_font_pattern
 
-def process_global_section(global_string):
-    print(global_string)
-
 
 class Entity():
+    """Generic IGES entity
+
+    Examples
+    --------
+    >>> import pyiges
+    >>> from pyiges import examples
+    >>> iges = pyiges.read(examples.impeller)
+    >>> entity = iges[0]
+    >>> entity.parameters
+    [['314', '75.2941176470588', '75.2941176470588', '75.2941176470588', '']]
+
+    >>> print(entity)
+    ----- Entity -----
+    314
+    1
+    0
+    Default
+    0
+    None
+    None
+    0
+    200
+    0
+    8
+    1
+    0
+    """
 
     def __init__(self, iges):
         self.d = dict()

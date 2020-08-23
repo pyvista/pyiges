@@ -8,67 +8,105 @@ from pyiges.entity import Entity
 
 
 class Point(Entity):
-    """Straight line segment"""
+    """IGES Point"""
 
     def _add_parameters(self, parameters):
-        self.x = float(parameters[1])
-        self.y = float(parameters[2])
-        self.z = float(parameters[3])
+        self._x = float(parameters[1])
+        self._y = float(parameters[2])
+        self._z = float(parameters[3])
 
-    def __str__(self):
-        s = '--- Point ---' + os.linesep
+    def x(self):
+        """X coordinate"""
+        return self._x
+
+    def y(self):
+        """Y coordinate"""
+        return self._y
+
+    def z(self):
+        """Z coordinate"""
+        return self._z
+
+    @property
+    def coordinate(self):
+        """Coordinate of the point as a numpy array"""
+        return np.array([self._x, self._y, self._z])
+
+    def __repr__(self):
+        s = '--- IGES Point ---' + os.linesep
         s += Entity.__str__(self) + os.linesep
         s += "{0}, {1}, {2} {3}".format(self.x, self.y, self.z, os.linesep)
         return s
 
     def to_vtk(self):
+        """Point represented as a ``pyvista.PolyData`` Mesh
+
+        Returns
+        -------
+        mesh : ``pyvista.PolyData``
+            ``pyvista`` mesh
+        """
         return pv.PolyData([self.x, self.y, self.z])
 
 
 class Line(Entity):
-    """Straight line segment"""
+    """IGES Straight line segment"""
 
     def _add_parameters(self, parameters):
-        self.x1 = float(parameters[1])
-        self.y1 = float(parameters[2])
-        self.z1 = float(parameters[3])
-        self.x2 = float(parameters[4])
-        self.y2 = float(parameters[5])
-        self.z2 = float(parameters[6])
+        self._x1 = float(parameters[1])
+        self._y1 = float(parameters[2])
+        self._z1 = float(parameters[3])
+        self._x2 = float(parameters[4])
+        self._y2 = float(parameters[5])
+        self._z2 = float(parameters[6])
 
-    def __str__(self):
-        s = '--- Line ---' + os.linesep
+    @property
+    def coordinates(self):
+        """Starting and ending point of the line as a ``numpy`` array"""
+        return np.array([[self._x1, self._y1, self._z1],
+                         [self._x2, self._y2, self._z2]])
+
+    def __repr__(self):
+        s = '--- IGES Line ---' + os.linesep
         s += Entity.__str__(self) + os.linesep
         s += "From point {0}, {1}, {2} {3}".format(self.x1, self.y1, self.z1, os.linesep)
         s += "To point {0}, {1}, {2}".format(self.x2, self.y2, self.z2)
         return s
 
     def to_vtk(self, resolution=1):
+        """Line represented as a ``pyvista.PolyData`` Mesh
+
+        Returns
+        -------
+        mesh : ``pyvista.PolyData``
+            ``pyvista`` mesh
+        """
         return pv.Line([self.x1, self.y1, self.z1],
                        [self.x2, self.y2, self.z2], resolution)
 
 
 class ConicArc(Entity):
     """Conic Arc (Type 104)
-    Arc defined by the equation: 
+    Arc defined by the equation:
     ``A*x**2 + B*x*y + C*y**2 + D*x + E*y + F = 0``
 
     with a Transformation Matrix (Entity 124). Can define
     an ellipse, parabola, or hyperbola.
 
-    The definitions of the terms ellipse, parabola, and hyperbola
-    are given in terms of the quantities Q1, Q2, and Q3. These
-    quantities are:
-
-        |  A   B/2  D/2 |        |  A   B/2 | 
-    Q1= | B/2   C   E/2 |   Q2 = | B/2   C  |   Q3 = A + C 
-        | D/2  E/2   F  | 
-    A parent conic curve is:
-
-    An ellipse if Q2 > 0 and Q1, Q3 < 0.
-    A hyperbola if Q2 < 0 and Q1 != 0.
-    A parabola if Q2 = 0 and Q1 != 0.
     """
+    # The definitions of the terms ellipse, parabola, and hyperbola
+    # are given in terms of the quantities Q1, Q2, and Q3. These
+    # quantities are:
+
+    #     |  A   B/2  D/2 |        |  A   B/2 |
+    # Q1= | B/2   C   E/2 |   Q2 = | B/2   C  |   Q3 = A + C
+    #     | D/2  E/2   F  |
+    # A parent conic curve is:
+
+    # An ellipse if Q2 > 0 and Q1, Q3 < 0.
+    # A hyperbola if Q2 < 0 and Q1 != 0.
+    # A parabola if Q2 = 0 and Q1 != 0.
+
 
     def _add_parameters(self, parameters):
         """
@@ -215,59 +253,255 @@ class RationalBSplineCurve(Entity):
 
 
 class RationalBSplineSurface(Entity):
+    """Rational B-Spline Surface
+
+
+    Examples
+    --------
+    >>> import pyiges
+    >>> from pyiges import examples
+    >>> iges = pyiges.read(examples.impeller)
+    >>> bsurfs = igs.bspline_surfaces()
+    >>> bsurf = bsurfs[0]
+    >>> print(bsurf)
+
+    Rational B-Spline Surface
+    Upper index of first sum:        3
+    Upper index of second sum:       3
+    Degree of first basis functions: 3
+    Degree of second basis functions: 3
+    Open in the first direction
+    Open in the second direction
+    Polynomial
+    Periodic in the first direction
+    Periodic in the second direction
+    Knot 1: [0. 0. 0. 0. 1. 1. 1. 1.]
+    Knot 2: [0. 0. 0. 0. 1. 1. 1. 1.]
+    u0: 1.000000
+    u1: 0.000000
+    v0: 1.000000
+    v1: 128.000000
+    Control Points: 16
+
+    >>> bsurf.control_points
+    array([[-26.90290533, -16.51153913,  -8.87632351],
+           [-25.85182035, -15.86644037, -21.16779478],
+           [-25.99572556, -15.95476156, -33.51982653],
+           [-27.33276363, -16.77536276, -45.77299513],
+           [-28.23297477, -14.34440426,  -8.87632351],
+           [-27.12992455, -13.78397453, -21.16779478],
+           [-27.28094438, -13.86070358, -33.51982653],
+           [-28.6840851 , -14.57360111, -45.77299513],
+           [-29.29280315, -12.03305788,  -8.87632351],
+           [-28.14834588, -11.56293146, -21.16779478],
+           [-28.3050348 , -11.62729699, -33.51982653],
+           [-29.76084756, -12.22532372, -45.77299513],
+           [-30.06701039,  -9.61104189,  -8.87632351],
+           [-28.89230518,  -9.2355426 , -21.16779478],
+           [-29.05313537,  -9.28695263, -33.51982653],
+           [-30.54742519,  -9.76460843, -45.77299513]])
+    """
+
+    @property
+    def k1(self):
+        """ Upper index of first sum"""
+        return self._k1
+
+    @property
+    def k2(self):
+        """ Upper index of second sum"""
+        return self._k2
+
+    @property
+    def m1(self):
+        """ Degree of first basis functions"""
+        return self._m1
+
+    @property
+    def m2(self):
+        """Degree of second basis functions"""
+        return self._m2
+
+    @property
+    def flag1(self):
+        """Closed in the first direction"""
+        return self._flag1
+
+    @property
+    def flag2(self):
+        """Closed in the second direction"""
+        return self._flag2
+
+    @property
+    def flag3(self):
+        """Polynominal
+
+        ``False`` - rational
+        ``True``  - polynomial
+        """
+        return self._flag3
+
+    @property
+    def flag4(self):
+        """First direction periodic"""
+        return self._flag4
+
+    @property
+    def flag5(self):
+        """Second direction Periodic"""
+        return self._flag5
+
+    @property
+    def knot1(self):
+        """First Knot Sequences"""
+        return self._knot1
+
+    @property
+    def knot2(self):
+        """Second Knot Sequences"""
+        return self._knot2
+
+    @property
+    def weights(self):
+        """First Knot Sequences"""
+        return self._weights
+
+    def control_points(self):
+        """Control points"""
+        return self._cp
+
+    @property
+    def u0(self):
+        """Start first parameter value"""
+        return self._u0
+
+    @property
+    def u1(self):
+        """End first parameter value"""
+        return self._u1
+
+    @property
+    def v0(self):
+        """Start second parameter value"""
+        return self._v0
+
+    @property
+    def v1(self):
+        """End second parameter value"""
+        return self._v1
 
     def _add_parameters(self, input_parameters):
         parameters = np.empty(len(input_parameters))
         parameters[:] = input_parameters
 
-        self.k1 = int(parameters[1])  # Upper index of first sum
-        self.k2 = int(parameters[2])  # Upper index of second sum
-        self.m1 = int(parameters[3])  # Degree of first basis functions
-        self.m2 = int(parameters[4])  # Degree of second basis functions
-        self.flag1 = bool(parameters[5])  # 0=closed in first direction, 1=not closed
-        self.flag2 = bool(parameters[6])  # 0=closed in second direction, 1=not closed
-        self.flag3 = bool(parameters[7])  # 0=rational, 1=polynomial
-        self.flag4 = bool(parameters[8])  # 0=nonperiodic in first direction , 1=periodic
-        self.flag5 = bool(parameters[9])  # 0=nonperiodic in second direction , 1=periodic
+        self._k1 = int(parameters[1])  # Upper index of first sum
+        self._k2 = int(parameters[2])  # Upper index of second sum
+        self._m1 = int(parameters[3])  # Degree of first basis functions
+        self._m2 = int(parameters[4])  # Degree of second basis functions
+        self._flag1 = bool(parameters[5])  # 0=closed in first direction, 1=not closed
+        self._flag2 = bool(parameters[6])  # 0=closed in second direction, 1=not closed
+        self._flag3 = bool(parameters[7])  # 0=rational, 1=polynomial
+        self._flag4 = bool(parameters[8])  # 0=nonperiodic in first direction , 1=periodic
+        self._flag5 = bool(parameters[9])  # 0=nonperiodic in second direction , 1=periodic
 
         # load knot sequences
-        # knot1 = np.append(parameters[10:11 + self.k2 + self.m1-1], [1, 1])
-        self.knot1 = parameters[10:12 + self.k1 + self.m1]
-        self.knot2 = parameters[12 + self.k1 + self.m1: 14 + self.k2 + self.m1 + self.k1 + self.m2]
+        self._knot1 = parameters[10:12 + self._k1 + self._m1]
+        self._knot2 = parameters[12 + self._k1 + self._m1: 14 + self._k2 + self._m1 + self._k1 + self._m2]
 
         # weights
-        st = 14 + self.k2 + self.m1 + self.k1 + self.m2
-        en = st + (1 + self.k2)*(1 + self.k1)
-        self.weights = parameters[st:en]
+        st = 14 + self._k2 + self._m1 + self._k1 + self._m2
+        en = st + (1 + self._k2)*(1 + self._k1)
+        self._weights = parameters[st:en]
 
         # control points
-        st = 14 + self.k2 + self.k1 + self.m1 + self.m2 + (1 + self.k2)*(1 + self.k1)
-        en = st + 3*(1 + self.k2)*(1 + self.k1)
-        self.cp = parameters[st:en].reshape(-1, 3)
+        st = 14 + self._k2 + self._k1 + self._m1 + self._m2 + (1 + self._k2)*(1 + self._k1)
+        en = st + 3*(1 + self._k2)*(1 + self._k1)
+        self._cp = parameters[st:en].reshape(-1, 3)
 
-        self.u0 = parameters[-3]  # Start first parameter value
-        self.u1 = parameters[-2]  # End first parameter value
-        self.v0 = parameters[-1]  # Start second parameter value
-        self.v1 = parameters[-0]  # End second parameter value
+        self._u0 = parameters[-3]  # Start first parameter value
+        self._u1 = parameters[-2]  # End first parameter value
+        self._v0 = parameters[-1]  # Start second parameter value
+        self._v1 = parameters[-0]  # End second parameter value
+
+    def __repr__(self):
+        info = 'Rational B-Spline Surface\n'
+        info += '    Upper index of first sum:          %d\n' % self._k1
+        info += '    Upper index of second sum:         %d\n' % self._k2
+        info += '    Degree of first basis functions:   %d\n' % self._m1
+        info += '    Degree of second basis functions:  %d\n' % self._m2
+
+        if self.flag1:
+            info += '    Closed in the first direction\n'
+        else:
+            info += '    Open in the first direction\n'
+
+        if self.flag2:
+            info += '    Closed in the second direction\n'
+        else:
+            info += '    Open in the second direction\n'
+
+        if self.flag3:
+            info += '    Rational\n'
+        else:
+            info += '    Polynomial\n'
+
+        if self.flag4:
+            info += '    Nonperiodic in first direction\n'
+        else:
+            info += '    Periodic in the first direction\n'
+
+        if self.flag5:
+            info += '    Nonperiodic in second direction\n'
+        else:
+            info += '    Periodic in the second direction\n'
+
+        info += '    Knot 1: %s\n' % str(self.knot1)
+        info += '    Knot 2: %s\n' % str(self.knot2)
+
+        info += '    u0: %f\n' % self.u0
+        info += '    u1: %f\n' % self.u1
+        info += '    v0: %f\n' % self.v0
+        info += '    v1: %f\n' % self.v1
+
+        info += '    Control Points: %d' % len(self.cp)
 
     def to_geomdl(self):
+        """Return a ``geommdl.BSpline.Surface``"""
         surf = BSpline.Surface()
 
         # Set degrees
-        surf.degree_u = self.m2
-        surf.degree_v = self.m1
+        surf.degree_u = self._m2
+        surf.degree_v = self._m1
 
         # set control points and knots
-        cp2d = self.cp.reshape(self.k2 + 1, self.k1 + 1, 3)
+        cp2d = self._cp.reshape(self._k2 + 1, self._k1 + 1, 3)
         surf.ctrlpts2d = cp2d.tolist()
-        surf.knotvector_u = self.knot2
-        surf.knotvector_v = self.knot1
+        surf.knotvector_u = self._knot2
+        surf.knotvector_v = self._knot1
 
         # set weights
-        surf.weights = self.weights
+        surf.weights = self._weights
         return surf
 
     def to_vtk(self, delta=0.025):
+        """Return a pyvista.PolyData Mesh
+
+        Parameters
+        ----------
+        delta : float, optional
+            Resolution of the surface.  Higher number result in a
+            denser mesh at the cost of compute time.
+
+        Returns
+        -------
+        mesh : ``pyvista.PolyData``
+            ``pyvista`` mesh
+
+        Examples
+        --------
+        >>> mesh = bsurf.to_vtk()
+        >>> mesh.plot()
+        """
         surf = self.to_geomdl()
         # Set evaluation delta
         surf.delta = delta
@@ -288,19 +522,17 @@ class CircularArc(Entity):
     Type 100: Simple circular arc of constant radius. Usually defined
     with a Transformation Matrix Entity (Type 124).
 
-    Notes
-    -----
-    Index in list    Type of data    Name    Description
-    1                REAL            Z       z displacement on XT,YT plane
-    2                REAL            X       x coordinate of center
-    3                REAL            Y       y coordinate of center
-    4                REAL            X1      x coordinate of start
-    5                REAL            Y1      y coordinate of start
-    6                REAL            X2      x coordinate of end
-    7                REAL            Y2      y coordinate of end
     """
 
     def _add_parameters(self, parameters):
+        # Index in list    Type of data    Name    Description
+        # 1                REAL            Z       z displacement on XT,YT plane
+        # 2                REAL            X       x coordinate of center
+        # 3                REAL            Y       y coordinate of center
+        # 4                REAL            X1      x coordinate of start
+        # 5                REAL            Y1      y coordinate of start
+        # 6                REAL            X2      x coordinate of end
+        # 7                REAL            Y2      y coordinate of end
         self.z = float(parameters[1])
         self.x = float(parameters[2])
         self.y = float(parameters[3])
@@ -310,6 +542,13 @@ class CircularArc(Entity):
         self.y2 = float(parameters[7])
 
     def to_vtk(self, resolution=20):
+        """Circular arc represented as a ``pyvista.PolyData`` Mesh
+
+        Returns
+        -------
+        mesh : ``pyvista.PolyData``
+            ``pyvista`` mesh
+        """
         start = [self.x1, self.y1, 0]
         end = [self.x2, self.y2, 0]
         center = [self.x, self.y, 0],
