@@ -21,7 +21,7 @@ clean:
 
 deploy:
 	rm -rf /tmp/pyiges
-	cd /tmp; git clone --single-branch --branch gh-pages https://$(github_pat)@github.com/akaszynski/pyiges.git
+	cd /tmp; git clone --single-branch --branch gh-pages https://$(github_pat)@github.com/pyvista/pyiges.git
 	rm -rf /tmp/pyiges/*
 	cp -r _build/html/* /tmp/pyiges/
 	touch /tmp/pyiges/.nojekyll

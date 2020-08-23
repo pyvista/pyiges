@@ -6,6 +6,9 @@ test: .PHONY
 docs: .PHONY
 	make -C docs html
 
+deploy_docs: .PHONY
+	make -C docs html deploy
+
 build: test
 	rm dist/*
 	python setup.py bdist_wheel
