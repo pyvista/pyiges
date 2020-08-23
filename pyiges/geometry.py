@@ -269,24 +269,23 @@ class RationalBSplineSurface(Entity):
     >>> bsurfs = igs.bspline_surfaces()
     >>> bsurf = bsurfs[0]
     >>> print(bsurf)
-
-    Rational B-Spline Surface
-    Upper index of first sum:        3
-    Upper index of second sum:       3
-    Degree of first basis functions: 3
-    Degree of second basis functions: 3
-    Open in the first direction
-    Open in the second direction
-    Polynomial
-    Periodic in the first direction
-    Periodic in the second direction
-    Knot 1: [0. 0. 0. 0. 1. 1. 1. 1.]
-    Knot 2: [0. 0. 0. 0. 1. 1. 1. 1.]
-    u0: 1.000000
-    u1: 0.000000
-    v0: 1.000000
-    v1: 128.000000
-    Control Points: 16
+        Rational B-Spline Surface
+        Upper index of first sum:        3
+        Upper index of second sum:       3
+        Degree of first basis functions: 3
+        Degree of second basis functions: 3
+        Open in the first direction
+        Open in the second direction
+        Polynomial
+        Periodic in the first direction
+        Periodic in the second direction
+        Knot 1: [0. 0. 0. 0. 1. 1. 1. 1.]
+        Knot 2: [0. 0. 0. 0. 1. 1. 1. 1.]
+        u0: 1.000000
+        u1: 0.000000
+        v0: 1.000000
+        v1: 128.000000
+        Control Points: 16
 
     >>> bsurf.control_points
     array([[-26.90290533, -16.51153913,  -8.87632351],
