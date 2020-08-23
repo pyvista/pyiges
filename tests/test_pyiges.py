@@ -8,6 +8,7 @@ from pyiges import examples
 def sample():
     return pyiges.read(examples.sample)
 
+
 @pytest.fixture(scope='module')
 def impeller():
     return pyiges.read(examples.impeller)
@@ -18,7 +19,7 @@ def test_str(sample):
 
 
 def test_get_item(sample):
-    assert 'POINT\n1\n0.0, 0.0, 0.0' in str(sample[0])
+    assert '0.0, 0.0, 0.0' in str(sample[0])
 
 
 def test_surfaces(impeller):

@@ -15,14 +15,17 @@ class Point(Entity):
         self._y = float(parameters[2])
         self._z = float(parameters[3])
 
+    @property
     def x(self):
         """X coordinate"""
         return self._x
 
+    @property
     def y(self):
         """Y coordinate"""
         return self._y
 
+    @property
     def z(self):
         """Z coordinate"""
         return self._z
@@ -34,9 +37,11 @@ class Point(Entity):
 
     def __repr__(self):
         s = '--- IGES Point ---' + os.linesep
-        s += Entity.__str__(self) + os.linesep
-        s += "{0}, {1}, {2} {3}".format(self.x, self.y, self.z, os.linesep)
+        s += "{0}, {1}, {2} {3}".format(self._x, self._y, self._z, os.linesep)
         return s
+
+    def __str__(self):
+        return self.__repr__()
 
     def to_vtk(self):
         """Point represented as a ``pyvista.PolyData`` Mesh
@@ -69,8 +74,8 @@ class Line(Entity):
     def __repr__(self):
         s = '--- IGES Line ---' + os.linesep
         s += Entity.__str__(self) + os.linesep
-        s += "From point {0}, {1}, {2} {3}".format(self.x1, self.y1, self.z1, os.linesep)
-        s += "To point {0}, {1}, {2}".format(self.x2, self.y2, self.z2)
+        s += "From point {0}, {1}, {2} {3}".format(self._x1, self._y1, self._z1, os.linesep)
+        s += "To point {0}, {1}, {2}".format(self._x2, self._y2, self._z2)
         return s
 
     def to_vtk(self, resolution=1):
@@ -81,8 +86,8 @@ class Line(Entity):
         mesh : ``pyvista.PolyData``
             ``pyvista`` mesh
         """
-        return pv.Line([self.x1, self.y1, self.z1],
-                       [self.x2, self.y2, self.z2], resolution)
+        return pv.Line([self._x1, self._y1, self._z1],
+                       [self._x2, self._y2, self._z2], resolution)
 
 
 class ConicArc(Entity):
