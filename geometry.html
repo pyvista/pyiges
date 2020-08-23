@@ -1,0 +1,602 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Geometry Entities &mdash; pyiges 0.1.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Pyiges Usage" href="pyiges.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pyiges
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pyiges.html">Pyiges Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Geometry Entities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#entity-definitions">Entity Definitions</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyiges</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Geometry Entities</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/geometry.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="geometry-entities">
+<h1>Geometry Entities<a class="headerlink" href="#geometry-entities" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">pyiges.Iges</span></code> class stores each individual IGES entity
+seperately and each entity of an <code class="docutils literal notranslate"><span class="pre">pyiges.Iges</span></code> object can be
+accessed either via indexing or by querying for a specific type of entity</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyiges</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyiges</span> <span class="kn">import</span> <span class="n">examples</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iges</span> <span class="o">=</span> <span class="n">pyiges</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">examples</span><span class="o">.</span><span class="n">impeller</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">iges</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">pyiges.entity.Entity</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lines</span> <span class="o">=</span> <span class="n">iges</span><span class="o">.</span><span class="n">lines</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">--- Line ---</span>
+<span class="go">----- Entity -----</span>
+<span class="go">110</span>
+<span class="go">1213</span>
+<span class="go">0</span>
+<span class="gp">...</span>
+<span class="go">0</span>
+<span class="go">From point 0.0, 0.0, -997.963013157</span>
+<span class="go">To point 0.0, 0.0, 2.036986843</span>
+</pre></div>
+</div>
+<p>Many of the entities are not yet fully supported, and those entities
+are represented as a generic <code class="docutils literal notranslate"><span class="pre">pyiges.geometry.Entity</span></code> object.
+However, many entities are supported, including:</p>
+<ul class="simple">
+<li><p>Vertex List (Type 502 Form 1)</p></li>
+<li><p>Edge List</p></li>
+<li><p>Loop (for specifying a bounded face for BREP geometries</p></li>
+<li><p>Face</p></li>
+<li><p>Circular arc</p></li>
+<li><p>Rational B-Spline Surface</p></li>
+<li><p>Rational B-Spline Curve</p></li>
+<li><p>Conic Arc (Type 104)</p></li>
+<li><p>Line</p></li>
+<li><p>Point</p></li>
+</ul>
+<div class="section" id="entity-definitions">
+<h2>Entity Definitions<a class="headerlink" href="#entity-definitions" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyiges.entity.Entity">
+<em class="property">class </em><code class="sig-prename descclassname">pyiges.entity.</code><code class="sig-name descname">Entity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iges</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.entity.Entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic IGES entity</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyiges</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyiges</span> <span class="kn">import</span> <span class="n">examples</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iges</span> <span class="o">=</span> <span class="n">pyiges</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">examples</span><span class="o">.</span><span class="n">impeller</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">entity</span> <span class="o">=</span> <span class="n">iges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">entity</span><span class="o">.</span><span class="n">parameters</span>
+<span class="go">[[&#39;314&#39;, &#39;75.2941176470588&#39;, &#39;75.2941176470588&#39;, &#39;75.2941176470588&#39;, &#39;&#39;]]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+<span class="go">----- Entity -----</span>
+<span class="go">314</span>
+<span class="go">1</span>
+<span class="go">0</span>
+<span class="go">Default</span>
+<span class="go">0</span>
+<span class="go">None</span>
+<span class="go">None</span>
+<span class="go">0</span>
+<span class="go">200</span>
+<span class="go">0</span>
+<span class="go">8</span>
+<span class="go">1</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyiges.geometry.Point">
+<em class="property">class </em><code class="sig-prename descclassname">pyiges.geometry.</code><code class="sig-name descname">Point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iges</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.Point" title="Permalink to this definition">¶</a></dt>
+<dd><p>IGES Point</p>
+<dl class="py method">
+<dt id="pyiges.geometry.Point.coordinate">
+<em class="property">property </em><code class="sig-name descname">coordinate</code><a class="headerlink" href="#pyiges.geometry.Point.coordinate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinate of the point as a numpy array</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.Point.to_vtk">
+<code class="sig-name descname">to_vtk</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.Point.to_vtk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point represented as a <code class="docutils literal notranslate"><span class="pre">pyvista.PolyData</span></code> Mesh</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>mesh</strong> – <code class="docutils literal notranslate"><span class="pre">pyvista</span></code> mesh</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">pyvista.PolyData</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.Point.x">
+<em class="property">property </em><code class="sig-name descname">x</code><a class="headerlink" href="#pyiges.geometry.Point.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>X coordinate</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.Point.y">
+<em class="property">property </em><code class="sig-name descname">y</code><a class="headerlink" href="#pyiges.geometry.Point.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Y coordinate</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.Point.z">
+<em class="property">property </em><code class="sig-name descname">z</code><a class="headerlink" href="#pyiges.geometry.Point.z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Z coordinate</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyiges.geometry.Line">
+<em class="property">class </em><code class="sig-prename descclassname">pyiges.geometry.</code><code class="sig-name descname">Line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iges</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.Line" title="Permalink to this definition">¶</a></dt>
+<dd><p>IGES Straight line segment</p>
+<dl class="py method">
+<dt id="pyiges.geometry.Line.coordinates">
+<em class="property">property </em><code class="sig-name descname">coordinates</code><a class="headerlink" href="#pyiges.geometry.Line.coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starting and ending point of the line as a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.Line.to_vtk">
+<code class="sig-name descname">to_vtk</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">resolution</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.Line.to_vtk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line represented as a <code class="docutils literal notranslate"><span class="pre">pyvista.PolyData</span></code> Mesh</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>mesh</strong> – <code class="docutils literal notranslate"><span class="pre">pyvista</span></code> mesh</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">pyvista.PolyData</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyiges.geometry.ConicArc">
+<em class="property">class </em><code class="sig-prename descclassname">pyiges.geometry.</code><code class="sig-name descname">ConicArc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iges</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.ConicArc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conic Arc (Type 104)
+Arc defined by the equation:
+<code class="docutils literal notranslate"><span class="pre">A*x**2</span> <span class="pre">+</span> <span class="pre">B*x*y</span> <span class="pre">+</span> <span class="pre">C*y**2</span> <span class="pre">+</span> <span class="pre">D*x</span> <span class="pre">+</span> <span class="pre">E*y</span> <span class="pre">+</span> <span class="pre">F</span> <span class="pre">=</span> <span class="pre">0</span></code></p>
+<p>with a Transformation Matrix (Entity 124). Can define
+an ellipse, parabola, or hyperbola.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyiges.geometry.RationalBSplineCurve">
+<em class="property">class </em><code class="sig-prename descclassname">pyiges.geometry.</code><code class="sig-name descname">RationalBSplineCurve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iges</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.RationalBSplineCurve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rational B-Spline Curve
+IGES Spec v5.3 p. 123 Section 4.23
+See also Appendix B, p. 545</p>
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineCurve.to_vtk">
+<code class="sig-name descname">to_vtk</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">delta</span><span class="o">=</span><span class="default_value">0.01</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.RationalBSplineCurve.to_vtk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set evaluation delta (controls the number of curve points)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyiges.geometry.RationalBSplineSurface">
+<em class="property">class </em><code class="sig-prename descclassname">pyiges.geometry.</code><code class="sig-name descname">RationalBSplineSurface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iges</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rational B-Spline Surface</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyiges</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyiges</span> <span class="kn">import</span> <span class="n">examples</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iges</span> <span class="o">=</span> <span class="n">pyiges</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">examples</span><span class="o">.</span><span class="n">impeller</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bsurfs</span> <span class="o">=</span> <span class="n">igs</span><span class="o">.</span><span class="n">bspline_surfaces</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bsurf</span> <span class="o">=</span> <span class="n">bsurfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">bsurf</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Rational B-Spline Surface
+Upper index of first sum:        3
+Upper index of second sum:       3
+Degree of first basis functions: 3
+Degree of second basis functions: 3
+Open in the first direction
+Open in the second direction
+Polynomial
+Periodic in the first direction
+Periodic in the second direction
+Knot 1: [0. 0. 0. 0. 1. 1. 1. 1.]
+Knot 2: [0. 0. 0. 0. 1. 1. 1. 1.]
+u0: 1.000000
+u1: 0.000000
+v0: 1.000000
+v1: 128.000000
+Control Points: 16</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bsurf</span><span class="o">.</span><span class="n">control_points</span>
+<span class="go">array([[-26.90290533, -16.51153913,  -8.87632351],</span>
+<span class="go">       [-25.85182035, -15.86644037, -21.16779478],</span>
+<span class="go">       [-25.99572556, -15.95476156, -33.51982653],</span>
+<span class="go">       [-27.33276363, -16.77536276, -45.77299513],</span>
+<span class="go">       [-28.23297477, -14.34440426,  -8.87632351],</span>
+<span class="go">       [-27.12992455, -13.78397453, -21.16779478],</span>
+<span class="go">       [-27.28094438, -13.86070358, -33.51982653],</span>
+<span class="go">       [-28.6840851 , -14.57360111, -45.77299513],</span>
+<span class="go">       [-29.29280315, -12.03305788,  -8.87632351],</span>
+<span class="go">       [-28.14834588, -11.56293146, -21.16779478],</span>
+<span class="go">       [-28.3050348 , -11.62729699, -33.51982653],</span>
+<span class="go">       [-29.76084756, -12.22532372, -45.77299513],</span>
+<span class="go">       [-30.06701039,  -9.61104189,  -8.87632351],</span>
+<span class="go">       [-28.89230518,  -9.2355426 , -21.16779478],</span>
+<span class="go">       [-29.05313537,  -9.28695263, -33.51982653],</span>
+<span class="go">       [-30.54742519,  -9.76460843, -45.77299513]])</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.control_points">
+<code class="sig-name descname">control_points</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.control_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Control points</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.flag1">
+<em class="property">property </em><code class="sig-name descname">flag1</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.flag1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closed in the first direction</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.flag2">
+<em class="property">property </em><code class="sig-name descname">flag2</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.flag2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closed in the second direction</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.flag3">
+<em class="property">property </em><code class="sig-name descname">flag3</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.flag3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Polynominal</p>
+<p><code class="docutils literal notranslate"><span class="pre">False</span></code> - rational
+<code class="docutils literal notranslate"><span class="pre">True</span></code>  - polynomial</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.flag4">
+<em class="property">property </em><code class="sig-name descname">flag4</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.flag4" title="Permalink to this definition">¶</a></dt>
+<dd><p>First direction periodic</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.flag5">
+<em class="property">property </em><code class="sig-name descname">flag5</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.flag5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Second direction Periodic</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.k1">
+<em class="property">property </em><code class="sig-name descname">k1</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.k1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upper index of first sum</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.k2">
+<em class="property">property </em><code class="sig-name descname">k2</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.k2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upper index of second sum</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.knot1">
+<em class="property">property </em><code class="sig-name descname">knot1</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.knot1" title="Permalink to this definition">¶</a></dt>
+<dd><p>First Knot Sequences</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.knot2">
+<em class="property">property </em><code class="sig-name descname">knot2</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.knot2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Second Knot Sequences</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.m1">
+<em class="property">property </em><code class="sig-name descname">m1</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.m1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Degree of first basis functions</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.m2">
+<em class="property">property </em><code class="sig-name descname">m2</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.m2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Degree of second basis functions</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.to_geomdl">
+<code class="sig-name descname">to_geomdl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.to_geomdl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <code class="docutils literal notranslate"><span class="pre">geommdl.BSpline.Surface</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.to_vtk">
+<code class="sig-name descname">to_vtk</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">delta</span><span class="o">=</span><span class="default_value">0.025</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.to_vtk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a pyvista.PolyData Mesh</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>delta</strong> (<em>float</em><em>, </em><em>optional</em>) – Resolution of the surface.  Higher number result in a
+denser mesh at the cost of compute time.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>mesh</strong> – <code class="docutils literal notranslate"><span class="pre">pyvista</span></code> mesh</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">pyvista.PolyData</span></code></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">bsurf</span><span class="o">.</span><span class="n">to_vtk</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.u0">
+<em class="property">property </em><code class="sig-name descname">u0</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.u0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start first parameter value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.u1">
+<em class="property">property </em><code class="sig-name descname">u1</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.u1" title="Permalink to this definition">¶</a></dt>
+<dd><p>End first parameter value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.v0">
+<em class="property">property </em><code class="sig-name descname">v0</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.v0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start second parameter value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.v1">
+<em class="property">property </em><code class="sig-name descname">v1</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.v1" title="Permalink to this definition">¶</a></dt>
+<dd><p>End second parameter value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.geometry.RationalBSplineSurface.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#pyiges.geometry.RationalBSplineSurface.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>First Knot Sequences</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyiges.geometry.CircularArc">
+<em class="property">class </em><code class="sig-prename descclassname">pyiges.geometry.</code><code class="sig-name descname">CircularArc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iges</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.CircularArc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Circular Arc</p>
+<p>Type 100: Simple circular arc of constant radius. Usually defined
+with a Transformation Matrix Entity (Type 124).</p>
+<dl class="py method">
+<dt id="pyiges.geometry.CircularArc.to_vtk">
+<code class="sig-name descname">to_vtk</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">resolution</span><span class="o">=</span><span class="default_value">20</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.CircularArc.to_vtk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Circular arc represented as a <code class="docutils literal notranslate"><span class="pre">pyvista.PolyData</span></code> Mesh</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>mesh</strong> – <code class="docutils literal notranslate"><span class="pre">pyvista</span></code> mesh</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">pyvista.PolyData</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyiges.geometry.Face">
+<em class="property">class </em><code class="sig-prename descclassname">pyiges.geometry.</code><code class="sig-name descname">Face</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iges</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.Face" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines a bound portion of three dimensional space (R^3) which
+has a finite area. Used to construct B-Rep Geometries.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyiges.geometry.EdgeList">
+<em class="property">class </em><code class="sig-prename descclassname">pyiges.geometry.</code><code class="sig-name descname">EdgeList</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iges</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.EdgeList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides a list of edges, comprised of vertices, for specifying
+B-Rep Geometries.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyiges.geometry.VertexList">
+<em class="property">class </em><code class="sig-prename descclassname">pyiges.geometry.</code><code class="sig-name descname">VertexList</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iges</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.geometry.VertexList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vertex List (Type 502 Form 1)</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="pyiges.html" class="btn btn-neutral float-left" title="Pyiges Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Alex Kaszynski
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

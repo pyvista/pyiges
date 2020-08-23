@@ -1,0 +1,395 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Pyiges Usage &mdash; pyiges 0.1.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Geometry Entities" href="geometry.html" />
+    <link rel="prev" title="pyIGES Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pyiges
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pyiges Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry Entities</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyiges</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Pyiges Usage</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/pyiges.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pyiges-usage">
+<h1>Pyiges Usage<a class="headerlink" href="#pyiges-usage" title="Permalink to this headline">¶</a></h1>
+<p>There are two ways the <code class="docutils literal notranslate"><span class="pre">pyiges</span></code> module can open iges files.  First,
+use the <code class="docutils literal notranslate"><span class="pre">read</span></code> function:</p>
+<dl class="py function">
+<dt id="pyiges.read">
+<code class="sig-prename descclassname">pyiges.</code><code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read an iges file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – Filename of an IGES file.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyiges</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyiges</span> <span class="kn">import</span> <span class="n">examples</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iges</span> <span class="o">=</span> <span class="n">pyiges</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">examples</span><span class="o">.</span><span class="n">impeller</span><span class="p">)</span>
+<span class="go">    pyiges.Iges object</span>
+<span class="go">    Description:</span>
+<span class="go">    Number of Entities: 4615</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p>Alternatively, you can create an object directly from the <code class="docutils literal notranslate"><span class="pre">Iges</span></code>
+class:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyiges</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iges</span> <span class="o">=</span> <span class="n">pyiges</span><span class="o">.</span><span class="n">Iges</span><span class="p">(</span><span class="s1">&#39;my_file.iges&#39;</span><span class="p">)</span>
+<span class="go">pyiges.Iges object</span>
+<span class="go">Description:</span>
+<span class="go">Number of Entities: 4615</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt id="pyiges.Iges">
+<em class="property">class </em><code class="sig-prename descclassname">pyiges.</code><code class="sig-name descname">Iges</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.Iges" title="Permalink to this definition">¶</a></dt>
+<dd><p>pyiges.Iges object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – Filename of an IGES file.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyiges</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyiges</span> <span class="kn">import</span> <span class="n">examples</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iges</span> <span class="o">=</span> <span class="n">pyiges</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">examples</span><span class="o">.</span><span class="n">impeller</span><span class="p">)</span>
+<span class="go">    pyiges.Iges object</span>
+<span class="go">    Description:</span>
+<span class="go">    Number of Entities: 4615</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="pyiges.Iges.bspline_surfaces">
+<code class="sig-name descname">bspline_surfaces</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">as_vtk</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">merge</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.Iges.bspline_surfaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>All bsplines</p>
+<p class="rubric">Examples</p>
+<p>Convert and plot all bspline surfaces.  This takes a while
+since the geometry tessellation is done in pure python by
+<code class="docutils literal notranslate"><span class="pre">geomdl</span></code>.  Reduce the conversion time by setting delta to a
+larger than default value (0.025)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">iges</span><span class="o">.</span><span class="n">bspline_surfaces</span><span class="p">(</span><span class="n">as_vtk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Alternatively, just extract the B-REP surfaces and extract
+their parameters</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bsurf</span> <span class="o">=</span> <span class="n">iges</span><span class="o">.</span><span class="n">bspline_surfaces</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bsurf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">Rational B-Spline Surface</span>
+<span class="go">    Upper index of first sum:        3</span>
+<span class="go">    Upper index of second sum:       3</span>
+<span class="go">    Degree of first basis functions: 3</span>
+<span class="go">    Degree of second basis functions: 3</span>
+<span class="go">    Open in the first direction</span>
+<span class="go">    Open in the second direction</span>
+<span class="go">    Polynomial</span>
+<span class="go">    Periodic in the first direction</span>
+<span class="go">    Periodic in the second direction</span>
+<span class="go">    Knot 1: [0. 0. 0. 0. 1. 1. 1. 1.]</span>
+<span class="go">    Knot 2: [0. 0. 0. 0. 1. 1. 1. 1.]</span>
+<span class="go">    u0: 1.000000</span>
+<span class="go">    u1: 0.000000</span>
+<span class="go">    v0: 1.000000</span>
+<span class="go">    v1: 128.000000</span>
+<span class="go">    Control Points: 16</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.Iges.bsplines">
+<code class="sig-name descname">bsplines</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">as_vtk</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">merge</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.Iges.bsplines" title="Permalink to this definition">¶</a></dt>
+<dd><p>All bsplines</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.Iges.circular_arcs">
+<code class="sig-name descname">circular_arcs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to_vtk</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">merge</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.Iges.circular_arcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>All circular_arcs</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.Iges.edge_lists">
+<code class="sig-name descname">edge_lists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">as_vtk</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">merge</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.Iges.edge_lists" title="Permalink to this definition">¶</a></dt>
+<dd><p>All Edge Lists</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.Iges.entities">
+<code class="sig-name descname">entities</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.Iges.entities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of all entities</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">iges</span><span class="o">.</span><span class="n">entities</span>
+<span class="go">[&lt;pyiges.geometry.Point at 0x7f7056069c10&gt;,</span>
+<span class="go"> &lt;pyiges.geometry.Point at 0x7f7056069790&gt;,</span>
+<span class="go"> &lt;pyiges.geometry.Point at 0x7f7056069a50&gt;,</span>
+<span class="go"> &lt;pyiges.geometry.Point at 0x7f7056069b10&gt;,</span>
+<span class="go"> &lt;pyiges.entity.Entity at 0x7f7056069910&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.Iges.from_pointer">
+<code class="sig-name descname">from_pointer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ptr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.Iges.from_pointer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an iges object according to an iges pointer</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.Iges.lines">
+<code class="sig-name descname">lines</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">as_vtk</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">merge</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.Iges.lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>All lines</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.Iges.points">
+<code class="sig-name descname">points</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">as_vtk</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">merge</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.Iges.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all points</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.Iges.to_vtk">
+<code class="sig-name descname">to_vtk</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lines</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">bsplines</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">surfaces</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">points</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">delta</span><span class="o">=</span><span class="default_value">0.025</span></em>, <em class="sig-param"><span class="n">merge</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.Iges.to_vtk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts entities to a vtk object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lines</strong> (<em>bool</em><em>, </em><em>optional</em>) – Convert lines.</p></li>
+<li><p><strong>surfaces</strong> (<em>bool</em><em>, </em><em>optional</em>) – Convert B-Spline surfaces.</p></li>
+<li><p><strong>points</strong> (<em>bool</em><em>, </em><em>optional</em>) – Convert points.</p></li>
+<li><p><strong>delta</strong> (<em>float</em><em>, </em><em>optional</em>) – Resolution when converting spline entities.  Higher
+resolution creates a better plot at the cost of computing
+time.</p></li>
+<li><p><strong>merge</strong> (<em>bool</em><em>, </em><em>optional</em>) – Merge all converted entites into one output.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>surf</strong> – Geometry represented as <code class="docutils literal notranslate"><span class="pre">pyvista.PolyData</span></code> if merged or
+a <code class="docutils literal notranslate"><span class="pre">MultiBlock</span></code> if unmerged.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pyvista.PolyData or pyvista.MultiBlock</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Convert all entities except for surfaces to vtk</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lines</span> <span class="o">=</span> <span class="n">iges</span><span class="o">.</span><span class="n">to_vtk</span><span class="p">(</span><span class="n">surfaces</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+<span class="go">PolyData (0x7f700c79f3d0)</span>
+<span class="go">  N Cells:      2440</span>
+<span class="go">  N Points:     96218</span>
+<span class="go">  X Bounds:     -4.299e+01, 6.912e+14</span>
+<span class="go">  Y Bounds:     -4.255e+01, 6.290e+14</span>
+<span class="go">  Z Bounds:     -9.980e+02, 6.702e+14</span>
+<span class="go">  N Arrays:     0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyiges.Iges.vertex_lists">
+<code class="sig-name descname">vertex_lists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">as_vtk</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">merge</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyiges.Iges.vertex_lists" title="Permalink to this definition">¶</a></dt>
+<dd><p>All Point Lists</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="geometry.html" class="btn btn-neutral float-right" title="Geometry Entities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="pyIGES Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Alex Kaszynski
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
