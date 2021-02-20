@@ -35,5 +35,5 @@ setup(
     description='Pythonic IGES reader',
     url='https://github.com/pyvista/pyiges',
     install_requires=['tqdm', 'geomdl', 'pyvista>=0.28.0'],
-    package_data={'pyiges.examples': ['impeller.igs']}
+    package_data={'pyiges.examples': ['impeller.igs', 'sample.igs']}
 )
