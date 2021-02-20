@@ -3,20 +3,18 @@ from setuptools import setup
 import os
 from io import open as io_open
 
-package_name = 'pyiges'
-
 # Get version
 __version__ = None
 filepath = os.path.dirname(__file__)
-version_file = os.path.join(filepath, package_name, '_version.py')
+version_file = os.path.join(filepath, 'pyiges', '_version.py')
 with io_open(version_file, mode='r') as fd:
     exec(fd.read())
 
 readme_file = os.path.join(filepath, 'README.rst')
 
 setup(
-    name=package_name,
-    packages = [package_name],
+    name='pyiges',
+    packages=['pyiges', 'pyiges.examples'],
     version=__version__,
     author='PyVista Developers',
     author_email='info@pyvista.org',
@@ -30,13 +28,12 @@ setup(
         'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX',
         'Operating System :: MacOS',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
     description='Pythonic IGES reader',
     url='https://github.com/pyvista/pyiges',
-    install_requires=['tqdm', 'geomdl', 'pyvista>=0.22.0'],
-    package_data={'pyiges.examples': ['impeller.igs']}
+    install_requires=['tqdm', 'geomdl', 'pyvista>=0.28.0'],
+    package_data={'pyiges.examples': ['impeller.igs', 'sample.igs']}
 )
