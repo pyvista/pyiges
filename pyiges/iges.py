@@ -273,7 +273,7 @@ class Iges():
                         elif entity_type_number == 122:  # Tabulated cylinder
                             e = Entity(self)
                         elif entity_type_number == 124:  # Transformation matrix
-                            e = Entity(self)
+                            e = geometry.Transformation(self)
                         elif entity_type_number == 126:  # Rational B-spline curve
                             e = geometry.RationalBSplineCurve(self)
                         elif entity_type_number == 128:  # Rational B-spline surface
@@ -351,6 +351,26 @@ class Iges():
         self._entities = entity_list
         self.desc = desc
         self._pointers = pointer_dict
+
+    def __getitem__(self, index):
+        """Get an item by its pointer"""
+        return self._entities[self._pointers[index]]
+
+    @property
+    def items(self):
+        """IGES items
+
+        Examples
+        --------
+        >>> from pyiges import examples
+        >>> import pyiges
+        >>> sample = pyiges.read(examples.sample)
+        >>> item = sample.items[0]
+        >>> item
+        --- IGES Point ---
+        0.0, 0.0, 0.0
+        """
+        return self._entities
 
 
 def read(filename):

@@ -19,7 +19,7 @@ def test_str(sample):
 
 
 def test_get_item(sample):
-    assert '0.0, 0.0, 0.0' in str(sample[0])
+    assert '0.0, 0.0, 0.0' in str(sample.items[0])
 
 
 def test_surfaces(impeller):
