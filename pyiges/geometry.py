@@ -90,6 +90,66 @@ class Line(Entity):
                        [self._x2, self._y2, self._z2], resolution)
 
 
+class Transformation(Entity):
+    """Transforms entities by matrix multiplication and vector
+    addition to give a translation, as shown below:
+
+    Notes
+    -----
+        | R11  R12  R13 |          | T1 |
+    R=  | R21  R22  R23 |     T =  | T2 |
+        | R31  R32  R33 |          | T3 |
+
+    ET = RE + T, where E is the entity coordinate
+
+    """
+
+    def _add_parameters(self, parameters):
+        """
+        Index in list	Type of data	Name	Description
+        1	REAL	R11	First row
+        2	REAL	R12	..
+        3	REAL	R13	..
+        4	REAL	T1	First T vector value
+        5	REAL	R21	Second row..
+        ...
+        12	REAL	T3	Third T vector value
+
+        """
+        self.r11 = float(parameters[1])
+        self.r12 = float(parameters[2])
+        self.r13 = float(parameters[3])
+        self.t1 = float(parameters[4])
+        self.r21 = float(parameters[5])
+        self.r22 = float(parameters[6])
+        self.r23 = float(parameters[7])
+        self.t2 = float(parameters[8])
+        self.r31 = float(parameters[9])
+        self.r32 = float(parameters[10])
+        self.r33 = float(parameters[11])
+        self.t3 = float(parameters[12])
+
+    def __repr__(self):
+        txt = 'IGES 124 Transformation Matrix\n'
+        txt += str(self.to_affine())
+        return txt
+
+    def to_affine(self):
+        """Return a 4x4 affline transformation matrix"""
+        return np.array([[self.r11, self.r12, self.r13, self.t1],
+                         [self.r21, self.r22, self.r23, self.t2],
+                         [self.r31, self.r32, self.r33, self.t3],
+                         [0, 0, 0, 1]])
+
+    def _to_vtk(self):
+        """Convert to a vtk transformation matrix"""
+        vtkmatrix = pv.vtkmatrix_from_array(self.to_affine())
+        import vtk
+        trans = vtk.vtkTransform()
+        trans.SetMatrix(vtkmatrix)
+        return trans
+
+
 class ConicArc(Entity):
     """Conic Arc (Type 104)
     Arc defined by the equation:
@@ -544,6 +604,7 @@ class CircularArc(Entity):
         self.y1 = float(parameters[5])
         self.x2 = float(parameters[6])
         self.y2 = float(parameters[7])
+        self._transform = self.d.get('transform', None)
 
     def to_vtk(self, resolution=20):
         """Circular arc represented as a ``pyvista.PolyData`` Mesh
@@ -561,7 +622,15 @@ class CircularArc(Entity):
                              pointb=end,
                              resolution=resolution)
         arc.points += [0, 0, self.z]
+        if self.transform is not None:
+            arc.transform(self.transform._to_vtk())
+
         return arc
+
+    @property
+    def transform(self):
+        if self._transform is not None:
+            return self.iges[self._transform]
 
     def __repr__(self):
         info = 'Circular Arc\nIGES Type 100\n'
