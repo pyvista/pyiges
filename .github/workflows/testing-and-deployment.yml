@@ -3,7 +3,7 @@ name: Unit Testing
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  docs_build:
+  unit_tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,7 +22,7 @@ jobs:
           python setup.py sdist
           pip install dist/*.tar.gz --disable-pip-version-check
           cd tests/
-          python -c "install pyiges"
+          python -c "import pyiges"
 
       - name: Unit testing
         run: |
