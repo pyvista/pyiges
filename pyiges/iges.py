@@ -356,6 +356,22 @@ class Iges():
         """Get an item by its pointer"""
         return self._entities[self._pointers[index]]
 
+    @property
+    def items(self):
+        """IGES items
+
+        Examples
+        --------
+        >>> from pyiges import examples
+        >>> import pyiges
+        >>> sample = pyiges.read(examples.sample)
+        >>> item = sample.items[0]
+        >>> item
+        --- IGES Point ---
+        0.0, 0.0, 0.0
+        """
+        return self._entities
+
 
 def read(filename):
     """Read an iges file.
