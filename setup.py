@@ -16,7 +16,7 @@ readme_file = os.path.join(filepath, 'README.rst')
 
 setup(
     name=package_name,
-    packages = [package_name],
+    packages=[package_name],
     version=__version__,
     author='PyVista Developers',
     author_email='info@pyvista.org',
@@ -30,13 +30,13 @@ setup(
         'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX',
         'Operating System :: MacOS',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
     description='Pythonic IGES reader',
     url='https://github.com/pyvista/pyiges',
-    install_requires=['tqdm', 'geomdl', 'pyvista>=0.22.0'],
+    install_requires=['tqdm', 'geomdl', 'pyvista>=0.28.0'],
     package_data={'pyiges.examples': ['impeller.igs']}
 )
