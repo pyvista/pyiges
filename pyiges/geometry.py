@@ -248,7 +248,7 @@ class RationalBSplineCurve(Entity):
         self.prop2 = int(parameters[4])
         self.prop3 = int(parameters[5])
         self.prop4 = int(parameters[6])
-        
+
         self.N = 1 + self.K - self.M
         self.A = self.N + 2 * self.M
 
@@ -309,8 +309,10 @@ class RationalBSplineCurve(Entity):
 
         # spline segfaults here sometimes...
         # return pv.Spline(np.array(curve.evalpts))
-        faces = np.arange(-1, 100)
-        faces[0] = 100
+
+        n_points = len(curve.evalpts)
+        faces = np.arange(-1, n_points)
+        faces[0] = n_points
         line = pv.PolyData()
         line.points = np.array(curve.evalpts)
         line.lines = faces
