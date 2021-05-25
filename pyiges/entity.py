@@ -41,6 +41,17 @@ class Entity():
         if type == 'string':
             self.d[key] = string
         else:
+            # Status numbers are made of four 2-digit numbers, together making an 8-digit number.
+            # It includes spaces, so  0 0 0 0 is a valid 8-digit for which int casting won't work.
+            if key == "status_number":
+                # Get a list of four 2-digit numbers with spaces removed.
+                separated_status_numbers = [string[i:i+2].replace(' ', '') for i in range(0, len(string), 2)]
+                
+                # Join these status numbers together as a single string.
+                status_number_string = ''.join(separated_status_numbers)
+
+                # The string can now be properly cast as an int
+                self.d[key] = int(status_number_string)
             if len(string) > 0:
                 self.d[key] = int(string)
             else:
