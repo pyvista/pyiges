@@ -52,7 +52,7 @@ class Entity():
 
                 # The string can now be properly cast as an int
                 self.d[key] = int(status_number_string)
-            if len(string) > 0:
+            elif len(string) > 0:
                 self.d[key] = int(string)
             else:
                 self.d[key] = None
