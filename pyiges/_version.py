@@ -1,6 +1,6 @@
 """ pyiges version """
 # major, minor, patch, -extra
-version_info = 0, 1, 5
+version_info = 0, 2, 0
 
 # Nice string for the version
 __version__ = '.'.join(map(str, version_info))
