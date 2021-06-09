@@ -7,13 +7,26 @@ import pyvista as pv
 from pyiges.entity import Entity
 
 
+def parse_float(str_value):
+    """
+    This fuction converts a string to float just like the built-in
+    float() function. In addition to "normal" numbers it also handles
+    numbers such as 1.2D3 (equivalent to 1.2E3)
+    """
+    try:
+        return float(str_value)
+    except ValueError:
+        return float(str_value.lower().replace("d", "e"))
+
+
+
 class Point(Entity):
     """IGES Point"""
 
     def _add_parameters(self, parameters):
-        self._x = float(parameters[1])
-        self._y = float(parameters[2])
-        self._z = float(parameters[3])
+        self._x = parse_float(parameters[1])
+        self._y = parse_float(parameters[2])
+        self._z = parse_float(parameters[3])
 
     @property
     def x(self):
@@ -58,12 +71,12 @@ class Line(Entity):
     """IGES Straight line segment"""
 
     def _add_parameters(self, parameters):
-        self._x1 = float(parameters[1])
-        self._y1 = float(parameters[2])
-        self._z1 = float(parameters[3])
-        self._x2 = float(parameters[4])
-        self._y2 = float(parameters[5])
-        self._z2 = float(parameters[6])
+        self._x1 = parse_float(parameters[1])
+        self._y1 = parse_float(parameters[2])
+        self._z1 = parse_float(parameters[3])
+        self._x2 = parse_float(parameters[4])
+        self._y2 = parse_float(parameters[5])
+        self._z2 = parse_float(parameters[6])
 
     @property
     def coordinates(self):
@@ -116,18 +129,18 @@ class Transformation(Entity):
         12	REAL	T3	Third T vector value
 
         """
-        self.r11 = float(parameters[1])
-        self.r12 = float(parameters[2])
-        self.r13 = float(parameters[3])
-        self.t1 = float(parameters[4])
-        self.r21 = float(parameters[5])
-        self.r22 = float(parameters[6])
-        self.r23 = float(parameters[7])
-        self.t2 = float(parameters[8])
-        self.r31 = float(parameters[9])
-        self.r32 = float(parameters[10])
-        self.r33 = float(parameters[11])
-        self.t3 = float(parameters[12])
+        self.r11 = parse_float(parameters[1])
+        self.r12 = parse_float(parameters[2])
+        self.r13 = parse_float(parameters[3])
+        self.t1 = parse_float(parameters[4])
+        self.r21 = parse_float(parameters[5])
+        self.r22 = parse_float(parameters[6])
+        self.r23 = parse_float(parameters[7])
+        self.t2 = parse_float(parameters[8])
+        self.r31 = parse_float(parameters[9])
+        self.r32 = parse_float(parameters[10])
+        self.r33 = parse_float(parameters[11])
+        self.t3 = parse_float(parameters[12])
 
     def __repr__(self):
         txt = 'IGES 124 Transformation Matrix\n'
@@ -255,29 +268,29 @@ class RationalBSplineCurve(Entity):
         # Knot sequence
         self.T = []
         for i in range(7, 7 + self.A + 1):
-            self.T.append(float(parameters[i]))
+            self.T.append(parse_float(parameters[i]))
 
         # Weights
         self.W = []
         for i in range(self.A + 8, self.A + self.K + 8):
-            self.W.append(float(parameters[i]))
+            self.W.append(parse_float(parameters[i]))
 
         # Control points
         self.control_points = []
         for i in range(9 + self.A + self.K, 9 + self.A + 4*self.K + 1, 3):
-            point = (float(parameters[i]), float(parameters[i+1]), float(parameters[i+2]))
+            point = (parse_float(parameters[i]), parse_float(parameters[i+1]), parse_float(parameters[i+2]))
             self.control_points.append(point)
 
         # Parameter values
-        self.V0 = float(parameters[12 + self.A + 4 * self.K])
-        self.V1 = float(parameters[13 + self.A + 4 * self.K])
+        self.V0 = parse_float(parameters[12 + self.A + 4 * self.K])
+        self.V1 = parse_float(parameters[13 + self.A + 4 * self.K])
 
         # Unit normal (only for planar curves)
         if len(parameters) > 14 + self.A + 4 * self.K + 1:
             self.planar_curve = True
-            self.XNORM = float(parameters[14 + self.A + 4 * self.K])
-            self.YNORM = float(parameters[15 + self.A + 4 * self.K])
-            self.ZNORM = float(parameters[16 + self.A + 4 * self.K])
+            self.XNORM = parse_float(parameters[14 + self.A + 4 * self.K])
+            self.YNORM = parse_float(parameters[15 + self.A + 4 * self.K])
+            self.ZNORM = parse_float(parameters[16 + self.A + 4 * self.K])
         else:
             self.planar_curve = False
 
@@ -457,8 +470,7 @@ class RationalBSplineSurface(Entity):
         return self._v1
 
     def _add_parameters(self, input_parameters):
-        parameters = np.empty(len(input_parameters))
-        parameters[:] = input_parameters
+        parameters = np.array([parse_float(param) for param in input_parameters], dtype=float)
 
         self._k1 = int(parameters[1])  # Upper index of first sum
         self._k2 = int(parameters[2])  # Upper index of second sum
@@ -599,13 +611,13 @@ class CircularArc(Entity):
         # 5                REAL            Y1      y coordinate of start
         # 6                REAL            X2      x coordinate of end
         # 7                REAL            Y2      y coordinate of end
-        self.z = float(parameters[1])
-        self.x = float(parameters[2])
-        self.y = float(parameters[3])
-        self.x1 = float(parameters[4])
-        self.y1 = float(parameters[5])
-        self.x2 = float(parameters[6])
-        self.y2 = float(parameters[7])
+        self.z = parse_float(parameters[1])
+        self.x = parse_float(parameters[2])
+        self.y = parse_float(parameters[3])
+        self.x1 = parse_float(parameters[4])
+        self.y1 = parse_float(parameters[5])
+        self.x2 = parse_float(parameters[6])
+        self.y2 = parse_float(parameters[7])
         self._transform = self.d.get('transform', None)
 
     def to_vtk(self, resolution=20):
@@ -818,7 +830,7 @@ class VertexList(Entity):
         self.n_points = int(parameters[1])
         self.points = []
         for i in range(self.n_points):
-            point = [float(self.parameters[2 + i*3]),
-                     float(self.parameters[3 + i*3]),
-                     float(self.parameters[4 + i*3])]
+            point = [parse_float(self.parameters[2 + i*3]),
+                     parse_float(self.parameters[3 + i*3]),
+                     parse_float(self.parameters[4 + i*3])]
             self.points.append(point)
