@@ -42,7 +42,8 @@ class Iges():
         """
 
     def to_vtk(self, lines=True, bsplines=True,
-               surfaces=True, points=True, delta=0.025, merge=True):
+               surfaces=True, points=True, delta=0.025, merge=True,
+               progress=tqdm):
         """Converts entities to a vtk object
 
         Parameters
@@ -63,6 +64,15 @@ class Iges():
 
         merge : bool, optional
             Merge all converted entites into one output.
+
+        progress: function, optional
+            Report conversion progress by use of this function. Example::
+
+                def silent_progress(iterable, *args, **kwargs):
+                    return iterable
+
+            Passing progress=silent_progress will show no progress, the
+            default is to use tqdm for progress reporting.
 
         Returns
         -------
@@ -85,7 +95,7 @@ class Iges():
           N Arrays:	0
         """
         items = pyvista.MultiBlock()
-        for entity in tqdm(self, desc='Converting entities to vtk'):
+        for entity in progress(self, desc='Converting entities to vtk'):
             if isinstance(entity, geometry.RationalBSplineCurve) and bsplines:
                 items.append(entity.to_vtk(delta))
             elif isinstance(entity, geometry.RationalBSplineSurface) and surfaces:
