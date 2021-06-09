@@ -59,3 +59,7 @@ docs/images/auto-generated
 
 # flycheck
 flycheck*
+
+
+# Editors
+.vscode
