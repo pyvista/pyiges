@@ -33,7 +33,7 @@ jobs:
       - name: Upload to PyPi
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
         run: |
-          pip install twine
+          pip install twine wheel
           python setup.py sdist bdist_wheel
           twine upload --skip-existing dist/pyiges*
         env:
