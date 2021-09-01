@@ -1,10 +1,12 @@
-import pyvista
-from vtk import vtkAppendPolyData
 from tqdm import tqdm
-
 from pyiges.entity import Entity
 from pyiges import geometry
 
+try: 
+    import pyvista 
+    from pyvista._vtk import vtkAppendPolyData
+except ImportError:
+    pass 
 
 class Iges():
     """pyiges.Iges object
