@@ -5,7 +5,7 @@ from pyiges import geometry
 try: 
     import pyvista 
     from pyvista._vtk import vtkAppendPolyData
-except Import Error:
+except ImportError:
     pass 
 
 class Iges():
