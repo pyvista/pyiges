@@ -19,6 +19,7 @@ setup(
     author='PyVista Developers',
     author_email='info@pyvista.org',
     long_description=io_open(readme_file, encoding="utf-8").read(),
+    long_description_content_type="text/x-rst",
     license='MIT',
     classifiers=[
         'Development Status :: 4 - Beta',
