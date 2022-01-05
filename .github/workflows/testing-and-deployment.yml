@@ -26,10 +26,18 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install
+      - name: Create package
+        run: python setup.py sdist
+
+      - name: Validate package
+        if: ${{ runner.os == 'Linux' }}
         run: |
-          python setup.py sdist
-          pip install dist/*.tar.gz --disable-pip-version-check
+          pip install twine
+          twine check dist/*
+
+      - name: Install package and smoke test
+        run: |
+          pip install pyiges --disable-pip-version-check --find-links=dist 
           cd tests/
           python -c "import pyiges"
 
