@@ -630,7 +630,7 @@ class CircularArc(Entity):
         """
         start = [self.x1, self.y1, 0]
         end = [self.x2, self.y2, 0]
-        center = [self.x, self.y, 0],
+        center = [self.x, self.y, 0]
         arc = pv.CircularArc(center=center,
                              pointa=start,
                              pointb=end,
