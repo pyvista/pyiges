@@ -70,12 +70,12 @@ NURBS surfaces and bsplines can be converted to ``pyvista`` meshes.
 
 Lines
 ~~~~~
-.. image:: https://github.com/pyvista/pyiges/raw/master/docs/images/impeller_lines.png
+.. image:: https://github.com/pyvista/pyiges/raw/main/docs/images/impeller_lines.png
 
 
 Surfaces
 ~~~~~~~~
-.. image:: https://github.com/pyvista/pyiges/raw/master/docs/images/impeller_surf.png
+.. image:: https://github.com/pyvista/pyiges/raw/main/docs/images/impeller_surf.png
 
 
 
