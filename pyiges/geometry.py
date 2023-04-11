@@ -542,6 +542,7 @@ class RationalBSplineSurface(Entity):
         info += '    v1: %f\n' % self.v1
 
         info += '    Control Points: %d' % len(self._cp)
+        return info
 
     def to_geomdl(self):
         """Return a ``geommdl.BSpline.Surface``"""

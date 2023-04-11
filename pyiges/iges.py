@@ -212,9 +212,6 @@ class Iges():
 
         return items
 
-    def __getitem__(self, indices):
-        return self._entities[indices]
-
     def __iter__(self):
         for entity in self._entities:
             yield entity
