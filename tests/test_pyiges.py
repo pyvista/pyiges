@@ -540,3 +540,17 @@ def test_to_vtk(impeller):
     lines = impeller.to_vtk(lines=True, bsplines=False, surfaces=False)
     assert lines.n_points
     assert lines.n_cells
+
+@pytest.mark.parametrize('line, expected_separators', [
+    # possible forms 1-4, see http://paulbourke.net/dataformats/iges/IGES.pdf
+    # p. 15
+    (',,', (',', ';')),
+    ('1Haa1Hba', ('a', 'b')),
+    ('1Haaa', ('a', ';')),
+    (',1Hb,', (',', 'b')),
+    # typical special case of form 2
+    ('1H,,1H;,', (',', ';')),
+])
+def test_parse_separators_from_first_global_line(line, expected_separators):
+    separators = pyiges.Iges._parse_separators_from_first_global_line(line)
+    assert separators == expected_separators
