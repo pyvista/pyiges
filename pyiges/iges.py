@@ -379,7 +379,7 @@ class Iges():
                             this_entity._add_parameters(parameters)
                         except Exception as err:
                             print('Warning: Could not initialize entity from parameters with Parameter section ' \
-                                  'ending an line {}. Possibly wrong or (yet) unsupported format. Entity will be discarded.'.format(line_no))
+                                  'ending on line {}. Possibly wrong or (yet) unsupported format. Entity will be discarded.'.format(line_no))
                             entities_to_discard.append(this_entity)
 
                 elif id_code == 'T':   # Terminate
