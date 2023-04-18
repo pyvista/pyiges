@@ -539,7 +539,7 @@ def test_transformation_vtk(trafo):
     assert m.GetElement(2,3) == pytest.approx(5.67397368511119)
 
 
-def test_example_with_invalid_conic_arc_and_form2_global_line():
+def test_example_with_invalid_conic_arc_and_form1_global_line():
     # For this file, the conic arc cannot be parsed.
     # This is either because of a wrong format of the file or a bug in the parsing.
     # Despite the reason is unclear, we use this here to test the robust discarding mechanism
