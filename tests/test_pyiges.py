@@ -1,9 +1,11 @@
 import numpy as np
+import os
 import pytest
 
 import pyiges
 from pyiges import examples
 
+DIR_TESTS_REFERENCE_DATA = os.path.join(os.path.dirname(__file__), 'reference_data')
 
 @pytest.fixture(scope='module')
 def sample():
@@ -535,6 +537,15 @@ def test_transformation_vtk(trafo):
     trafo = trafo._to_vtk()
     m = trafo.GetMatrix()
     assert m.GetElement(2,3) == pytest.approx(5.67397368511119)
+
+
+def test_conic_arc_parse():
+    # For this file, the conic arc cannot be parsed.
+    # This is either because of a wrong format of the file or a bug in the parsing.
+    # Despite the reason is unclear, we use this here to test the robust discarding mechanism
+    iges = pyiges.read(os.path.join(DIR_TESTS_REFERENCE_DATA, 'example-arcs.iges'))
+    assert not iges.conic_arcs()
+
 
 def test_to_vtk(impeller):
     lines = impeller.to_vtk(lines=True, bsplines=False, surfaces=False)
