@@ -550,7 +550,15 @@ def test_to_vtk(impeller):
     (',1Hb,', (',', 'b')),
     # typical special case of form 2
     ('1H,,1H;,', (',', ';')),
+    # invalid forms
+    ('xyz', None),
+    (',2H', None),
+    ('1Hxy', None),
 ])
 def test_parse_separators_from_first_global_line(line, expected_separators):
-    separators = pyiges.Iges._parse_separators_from_first_global_line(line)
-    assert separators == expected_separators
+    if expected_separators is None:
+        with pytest.raises(Exception, match='Invalid Global section format'):
+            pyiges.Iges._parse_separators_from_first_global_line(line)
+    else:
+        separators = pyiges.Iges._parse_separators_from_first_global_line(line)
+        assert separators == expected_separators
