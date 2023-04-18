@@ -261,9 +261,10 @@ class Iges():
             first_param_line = True
             global_string = ""
             pointer_dict = {}
+            entities_to_discard = []
 
             # for line in tqdm(f.readlines(), desc='Reading file'):
-            for line in f.readlines():
+            for line_no, line in enumerate(f.readlines(), start=1):
                 data = line[:80]
                 id_code = line[72]
 
@@ -373,10 +374,22 @@ class Iges():
                         first_param_line = True
                         param_string = param_string.strip()[:-1]
                         parameters = param_string.split(param_sep)
-                        entity_list[pointer_dict[directory_pointer]]._add_parameters(parameters)
+                        this_entity = entity_list[pointer_dict[directory_pointer]]
+                        try:
+                            this_entity._add_parameters(parameters)
+                        except Exception as err:
+                            print('Warning: Could not initialize entity from parameters with Parameter section ' \
+                                  'ending an line {}. Possibly wrong or (yet) unsupported format. Entity will be discarded.'.format(line_no))
+                            entities_to_discard.append(this_entity)
 
                 elif id_code == 'T':   # Terminate
                     pass
+
+        for e in entities_to_discard:
+            try:
+                entity_list.remove(e)
+            except:
+                pass
 
         self._entities = entity_list
         self.desc = desc
