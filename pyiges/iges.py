@@ -238,7 +238,7 @@ class Iges():
             elif line[1:3] == '1H':
                 b = line[3]
             else:
-                raise Exception('Invalid Global section format')
+                raise RuntimeError('Invalid Global section format')
         elif line[0:2] == '1H':
             a = line[2]
             if line[4:6] == '1H':
@@ -246,9 +246,9 @@ class Iges():
             elif line[3] == a:
                 b = ';'
             else:
-                raise Exception('Invalid Global section format')
+                raise RuntimeError('Invalid Global section format')
         else:
-            raise Exception('Invalid Global section format')
+            raise RuntimeError('Invalid Global section format')
         return a, b
 
     def _read(self, filename):

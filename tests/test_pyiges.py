@@ -557,7 +557,7 @@ def test_to_vtk(impeller):
 ])
 def test_parse_separators_from_first_global_line(line, expected_separators):
     if expected_separators is None:
-        with pytest.raises(Exception, match='Invalid Global section format'):
+        with pytest.raises(RuntimeError, match='Invalid Global section format'):
             pyiges.Iges._parse_separators_from_first_global_line(line)
     else:
         separators = pyiges.Iges._parse_separators_from_first_global_line(line)
