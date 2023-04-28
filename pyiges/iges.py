@@ -229,6 +229,28 @@ class Iges():
         """Return an iges object according to an iges pointer"""
         return self[self._pointers[ptr]]
 
+    @staticmethod
+    def _parse_separators_from_first_global_line(line):
+        if line[0] == ',':
+            a = ','
+            if line[1] == a:
+                b = ';'
+            elif line[1:3] == '1H':
+                b = line[3]
+            else:
+                raise RuntimeError('Invalid Global section format')
+        elif line[0:2] == '1H':
+            a = line[2]
+            if line[4:6] == '1H':
+                b = line[6]
+            elif line[3] == a:
+                b = ';'
+            else:
+                raise RuntimeError('Invalid Global section format')
+        else:
+            raise RuntimeError('Invalid Global section format')
+        return a, b
+
     def _read(self, filename):
         with open(filename, 'r') as f:
             param_string = ''
@@ -239,9 +261,10 @@ class Iges():
             first_param_line = True
             global_string = ""
             pointer_dict = {}
+            entities_to_discard = []
 
             # for line in tqdm(f.readlines(), desc='Reading file'):
-            for line in f.readlines():
+            for line_no, line in enumerate(f.readlines(), start=1):
                 data = line[:80]
                 id_code = line[72]
 
@@ -251,8 +274,7 @@ class Iges():
                 elif id_code == 'G':   # Global
                     global_string += data   # Consolidate all global lines
                     if first_global_line:
-                        param_sep = data[2]
-                        record_sep = data[6]
+                        param_sep, record_sep = self._parse_separators_from_first_global_line(data)
                         first_global_line = False
 
                 elif id_code == 'D':   # Directory entry
@@ -352,10 +374,22 @@ class Iges():
                         first_param_line = True
                         param_string = param_string.strip()[:-1]
                         parameters = param_string.split(param_sep)
-                        entity_list[pointer_dict[directory_pointer]]._add_parameters(parameters)
+                        this_entity = entity_list[pointer_dict[directory_pointer]]
+                        try:
+                            this_entity._add_parameters(parameters)
+                        except Exception as err:
+                            print('Warning: Could not initialize entity from parameters with Parameter section ' \
+                                  'ending on line {}. Possibly wrong or (yet) unsupported format. Entity will be discarded.'.format(line_no))
+                            entities_to_discard.append(this_entity)
 
                 elif id_code == 'T':   # Terminate
                     pass
+
+        for e in entities_to_discard:
+            try:
+                entity_list.remove(e)
+            except:
+                pass
 
         self._entities = entity_list
         self.desc = desc

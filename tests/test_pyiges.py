@@ -1,9 +1,11 @@
 import numpy as np
+import os
 import pytest
 
 import pyiges
 from pyiges import examples
 
+DIR_TESTS_REFERENCE_DATA = os.path.join(os.path.dirname(__file__), 'reference_data')
 
 @pytest.fixture(scope='module')
 def sample():
@@ -536,7 +538,40 @@ def test_transformation_vtk(trafo):
     m = trafo.GetMatrix()
     assert m.GetElement(2,3) == pytest.approx(5.67397368511119)
 
+
+def test_example_with_invalid_conic_arc_and_form1_global_line():
+    # For this file, the conic arc cannot be parsed.
+    # This is either because of a wrong format of the file or a bug in the parsing.
+    # Despite the reason is unclear, we use this here to test the robust discarding mechanism
+    iges = pyiges.read(os.path.join(DIR_TESTS_REFERENCE_DATA, 'example-arcs.iges'))
+    assert not iges.conic_arcs()
+    assert len(iges.bsplines()) == 1
+    assert len(iges.circular_arcs()) == 1
+
+
 def test_to_vtk(impeller):
     lines = impeller.to_vtk(lines=True, bsplines=False, surfaces=False)
     assert lines.n_points
     assert lines.n_cells
+
+@pytest.mark.parametrize('line, expected_separators', [
+    # possible forms 1-4, see http://paulbourke.net/dataformats/iges/IGES.pdf
+    # p. 15
+    (',,', (',', ';')),
+    ('1Haa1Hba', ('a', 'b')),
+    ('1Haaa', ('a', ';')),
+    (',1Hb,', (',', 'b')),
+    # typical special case of form 2
+    ('1H,,1H;,', (',', ';')),
+    # invalid forms
+    ('xyz', None),
+    (',2H', None),
+    ('1Hxy', None),
+])
+def test_parse_separators_from_first_global_line(line, expected_separators):
+    if expected_separators is None:
+        with pytest.raises(RuntimeError, match='Invalid Global section format'):
+            pyiges.Iges._parse_separators_from_first_global_line(line)
+    else:
+        separators = pyiges.Iges._parse_separators_from_first_global_line(line)
+        assert separators == expected_separators
