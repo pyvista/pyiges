@@ -36,7 +36,7 @@ setup(
     ],
     description='Pythonic IGES reader',
     url='https://github.com/pyvista/pyiges',
-    install_requires=['tqdm'],
+    install_requires=['tqdm', 'numpy'],
     extras_require={
         'full' : ['geomdl', 'pyvista>=0.28.0']
     },
