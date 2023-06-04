@@ -42,7 +42,7 @@ this repo and install with:
    cd pyiges
    pip install .[full]
 
-Note that the square brackets might be escaped or quoted when using ``zsh``.
+Note that the square brackets might need to be escaped or quoted when using ``zsh``.
 
 
 Usage
