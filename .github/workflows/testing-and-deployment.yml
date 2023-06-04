@@ -37,7 +37,7 @@ jobs:
 
       - name: Install package and smoke test
         run: |
-          pip install -e . --disable-pip-version-check --find-links=dist
+          pip install -e .[full] --disable-pip-version-check --find-links=dist
           cd tests/
           python -c "import pyiges"
 

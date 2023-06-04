@@ -1,8 +1,8 @@
 import os
 
-from geomdl import NURBS, BSpline
+from pyiges.check_imports import assert_full_module_variant, geomdl, pyvista as pv
+
 import numpy as np
-import pyvista as pv
 
 from pyiges.entity import Entity
 
@@ -17,8 +17,6 @@ def parse_float(str_value):
         return float(str_value)
     except ValueError:
         return float(str_value.lower().replace("d", "e"))
-
-
 
 class Point(Entity):
     """IGES Point"""
@@ -56,6 +54,7 @@ class Point(Entity):
     def __str__(self):
         return self.__repr__()
 
+    @assert_full_module_variant
     def to_vtk(self):
         """Point represented as a ``pyvista.PolyData`` Mesh
 
@@ -91,6 +90,7 @@ class Line(Entity):
         s += "To point {0}, {1}, {2}".format(self._x2, self._y2, self._z2)
         return s
 
+    @assert_full_module_variant
     def to_vtk(self, resolution=1):
         """Line represented as a ``pyvista.PolyData`` Mesh
 
@@ -154,6 +154,7 @@ class Transformation(Entity):
                          [self.r31, self.r32, self.r33, self.t3],
                          [0, 0, 0, 1]])
 
+    @assert_full_module_variant
     def _to_vtk(self):
         """Convert to a vtk transformation matrix"""
         vtkmatrix = pv.vtkmatrix_from_array(self.to_affine())
@@ -227,6 +228,7 @@ class ConicArc(Entity):
         info += 'Scalar coefficient:  %f' % self.f
         return info
 
+    @assert_full_module_variant
     def to_vtk(self):
 
         # a*x**2 + b*x*y + c*y**2 + d*x + e*y + f = 0
@@ -305,7 +307,9 @@ class RationalBSplineCurve(Entity):
             s += "Unit normal: {0} {1} {2}".format(self.XNORM, self.YNORM, self.ZNORM)
         return s
 
+    @assert_full_module_variant
     def to_geomdl(self):
+        from geomdl import NURBS
         curve = NURBS.Curve()
         curve.degree = self.M
         curve.ctrlpts = self.control_points
@@ -313,6 +317,7 @@ class RationalBSplineCurve(Entity):
         curve.knotvector = self.T  # Set knot vector
         return curve
 
+    @assert_full_module_variant
     def to_vtk(self, delta=0.01):
         """Set evaluation delta (controls the number of curve points)
         """
@@ -544,8 +549,10 @@ class RationalBSplineSurface(Entity):
         info += '    Control Points: %d' % len(self._cp)
         return info
 
+    @assert_full_module_variant
     def to_geomdl(self):
         """Return a ``geommdl.BSpline.Surface``"""
+        from geomdl import BSpline
         surf = BSpline.Surface()
 
         # Set degrees
@@ -562,6 +569,7 @@ class RationalBSplineSurface(Entity):
         surf.weights = self._weights
         return surf
 
+    @assert_full_module_variant
     def to_vtk(self, delta=0.025):
         """Return a pyvista.PolyData Mesh
 
@@ -621,6 +629,7 @@ class CircularArc(Entity):
         self.y2 = parse_float(parameters[7])
         self._transform = self.d.get('transform', None)
 
+    @assert_full_module_variant
     def to_vtk(self, resolution=20):
         """Circular arc represented as a ``pyvista.PolyData`` Mesh
 

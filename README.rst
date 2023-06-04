@@ -21,11 +21,17 @@ following entities:
 
 Installation
 ------------
+
+``pyiges`` is offered in a "full" variant including the conversion features
+and a "pure" parsing module variant.
+The pure variant has no conversion features, no dependencies to ``pyvista,geomdl``,
+and can be installed by removing the ``[full]`` specificator from the following commands.
+
 Install with pip using:
 
 .. code::
 
-   pip install pyiges
+   pip install pyiges[full]
 
 Otherwise, if you want the bleeding edge version, feel free to clone
 this repo and install with:
@@ -34,7 +40,9 @@ this repo and install with:
 
    git clone https://github.com/pyvista/pyiges
    cd pyiges
-   pip install .
+   pip install .[full]
+
+Note that the square brackets might be escaped or quoted when using ``zsh``.
 
 
 Usage
