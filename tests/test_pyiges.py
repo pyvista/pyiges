@@ -641,3 +641,7 @@ def test_parse_separators_from_first_global_line(line, expected_separators):
     else:
         separators = pyiges.Iges._parse_separators_from_first_global_line(line)
         assert separators == expected_separators
+
+def test_package_variant_detection(request):
+    is_full_module_expected = request.config.getoption("--expect-full-module")
+    assert pyiges.check_imports._IS_FULL_MODULE == is_full_module_expected
