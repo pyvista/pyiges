@@ -1,7 +1,7 @@
 Geometry Entities
 -----------------
 The ``pyiges.Iges`` class stores each individual IGES entity
-seperately and each entity of an ``pyiges.Iges`` object can be
+separately and each entity of an ``pyiges.Iges`` object can be
 accessed either via indexing or by querying for a specific type of entity
 
 .. code:: python
@@ -21,7 +21,7 @@ accessed either via indexing or by querying for a specific type of entity
     0
     ...
     0
-    From point 0.0, 0.0, -997.963013157 
+    From point 0.0, 0.0, -997.963013157
     To point 0.0, 0.0, 2.036986843
 
 Many of the entities are not yet fully supported, and those entities
