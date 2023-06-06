@@ -1,3 +1,4 @@
+import functools
 import numpy as np
 import os
 import pytest
@@ -6,6 +7,20 @@ import pyiges
 from pyiges import examples
 
 DIR_TESTS_REFERENCE_DATA = os.path.join(os.path.dirname(__file__), 'reference_data')
+
+def adjust_depending_on_package_variant(test_func):
+    ''' If the full module is present, run test as usual,
+    otherwise assert that the error is triggered as intended.
+    '''
+    @functools.wraps(test_func)
+    def generalized_test_func(*a, **kw):
+        if pyiges.check_imports._IS_FULL_MODULE:
+            return test_func(*a, **kw)
+        else:
+            with pytest.raises(Exception, match=r'install pyiges\[full\]'):
+                return test_func(*a, **kw)
+    return generalized_test_func
+
 
 @pytest.fixture(scope='module')
 def sample():
@@ -88,17 +103,20 @@ def test_parse_completeness2(sample):
 
 
 @pytest.mark.parametrize('merge', [False, True])
+@adjust_depending_on_package_variant
 def test_iges_to_vtk1(impeller, merge):
     items = impeller.to_vtk(delta=0.5, merge=merge)
     assert items.bounds == pytest.approx((-50.516562808,  49.445007453, -49.510005208,
                                           50.494748866, -997.9630126953125, 1011.0750122070312))
 
 @pytest.mark.parametrize('merge', [False, True])
+@adjust_depending_on_package_variant
 def test_iges_to_vtk2(sample, merge):
     items = sample.to_vtk(merge=merge)
     assert items.bounds == pytest.approx((0.0, 1.0, 0.0, 1.0, 0.0, 0.0))
 
 
+@adjust_depending_on_package_variant
 def test_surfaces_vtk(surf):
     mesh = surf.to_vtk(delta=0.1)
 
@@ -114,6 +132,29 @@ def test_surfaces_vtk(surf):
 
     assert mesh.bounds == pytest.approx((-30.547425187, -26.209437969209873, -16.775362758,
                                          -9.363301218200274, -45.772995131000016, -8.876323512))
+
+
+@adjust_depending_on_package_variant
+def test_surfaces_to_geomdl(surf):
+    gsurf = surf.to_geomdl()
+    assert gsurf.data['control_points'] == pytest.approx((
+        [-26.902905334, -16.51153913, -8.876323512],
+        [-25.851820351, -15.866440371, -21.167794775],
+        [-25.995725563, -15.954761558, -33.519826531],
+        [-27.332763631, -16.775362758, -45.772995131],
+        [-28.232974775, -14.344404257, -8.876323512],
+        [-27.129924549, -13.783974529, -21.167794775],
+        [-27.28094438, -13.860703585, -33.519826531],
+        [-28.684085103, -14.573601108, -45.772995131],
+        [-29.292803148, -12.033057876, -8.876323512],
+        [-28.148345882, -11.562931461, -21.167794775],
+        [-28.305034796, -11.62729699, -33.519826531],
+        [-29.760847559, -12.225323719, -45.772995131],
+        [-30.067010387, -9.611041892, -8.876323512],
+        [-28.892305175, -9.235542604, -21.167794775],
+        [-29.05313537, -9.286952628, -33.519826531],
+        [-30.547425187, -9.764608432, -45.772995131],
+    ))
 
 
 def test_surfaces_parse(surf):
@@ -230,6 +271,7 @@ def test_bsplines_parse(curve):
     assert str(curve)
 
 
+@adjust_depending_on_package_variant
 def test_bsplines_vtk(curve):
     mesh = curve.to_vtk()
 
@@ -246,7 +288,28 @@ def test_bsplines_vtk(curve):
     assert mesh.bounds == pytest.approx((0.531027642, 0.559345007,
                                          0.006617509, 0.127235606, 0., 0.))
 
+@adjust_depending_on_package_variant
+def test_bsplines_to_geomdl(curve):
+    gcurve = curve.to_geomdl()
+    assert gcurve.data['control_points'] == pytest.approx((
+        [0.531027642, 0.127235606, 0.0, 1.0],
+        [0.53482791, 0.099559574, 0.0, 1.0],
+        [0.537603234, 0.077944022, 0.0, 1.0],
+        [0.539206635, 0.06545597, 0.0, 1.0],
+        [0.540802737, 0.052996393, 0.0, 1.0],
+        [0.542675511, 0.038377045, 0.0, 1.0],
+        [0.544208805, 0.028733039, 0.0, 1.0],
+        [0.546564848, 0.013914155, 0.0, 1.0],
+        [0.548603824, 0.009169564, 0.0, 1.0],
+        [0.551376925, 0.002716702, 0.0, 1.0],
+        [0.554223526, 0.012546793, 0.0, 1.0],
+        [0.556570985, 0.020653212, 0.0, 1.0],
+        [0.557884113, 0.035401282, 0.0, 1.0],
+        [0.55898716, 0.047789894, 0.0, 1.0],
+        [0.559345007, 0.06395869, 0.0, 1.0],
+    ))
 
+@adjust_depending_on_package_variant
 def test_points_vtk(sample):
     points = sample.points(as_vtk=True, merge=True) # pv.PolyData
 
@@ -331,6 +394,7 @@ def test_point_parse(point):
     assert str(point)
 
 
+@adjust_depending_on_package_variant
 def test_point_vtk(point):
     point = point.to_vtk() # pv.PolyData
 
@@ -380,6 +444,7 @@ def test_circular_arcs_parse(carc):
     assert str(carc)
 
 
+@adjust_depending_on_package_variant
 def test_circular_arcs_vtk(carc):
     polydata = carc.to_vtk()
 
@@ -479,6 +544,7 @@ def test_line_parse(line):
     assert str(line)
 
 
+@adjust_depending_on_package_variant
 def test_line_vtk(line):
     polydata = line.to_vtk()
     assert polydata.n_arrays == 2
@@ -533,11 +599,11 @@ def test_transformation_parse(trafo):
     assert repr(trafo)
     assert str(trafo)
 
+@adjust_depending_on_package_variant
 def test_transformation_vtk(trafo):
     trafo = trafo._to_vtk()
     m = trafo.GetMatrix()
     assert m.GetElement(2,3) == pytest.approx(5.67397368511119)
-
 
 def test_example_with_invalid_conic_arc_and_form1_global_line():
     # For this file, the conic arc cannot be parsed.
@@ -548,7 +614,7 @@ def test_example_with_invalid_conic_arc_and_form1_global_line():
     assert len(iges.bsplines()) == 1
     assert len(iges.circular_arcs()) == 1
 
-
+@adjust_depending_on_package_variant
 def test_to_vtk(impeller):
     lines = impeller.to_vtk(lines=True, bsplines=False, surfaces=False)
     assert lines.n_points
@@ -575,3 +641,7 @@ def test_parse_separators_from_first_global_line(line, expected_separators):
     else:
         separators = pyiges.Iges._parse_separators_from_first_global_line(line)
         assert separators == expected_separators
+
+def test_package_variant_detection(request):
+    is_full_module_expected = request.config.getoption("--expect-full-module")
+    assert pyiges.check_imports._IS_FULL_MODULE == is_full_module_expected

@@ -1,12 +1,9 @@
 from tqdm import tqdm
+
+from pyiges.check_imports import assert_full_module_variant, pyvista, vtkAppendPolyData
+
 from pyiges.entity import Entity
 from pyiges import geometry
-
-try: 
-    import pyvista 
-    from pyvista._vtk import vtkAppendPolyData
-except ImportError:
-    pass 
 
 class Iges():
     """pyiges.Iges object
@@ -43,6 +40,7 @@ class Iges():
          <pyiges.entity.Entity at 0x7f7056069910>]
         """
 
+    @assert_full_module_variant
     def to_vtk(self, lines=True, bsplines=True,
                surfaces=True, points=True, delta=0.025, merge=True,
                progress=tqdm):

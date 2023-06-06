@@ -46,6 +46,8 @@ jobs:
           pip install -r requirements_test.txt --disable-pip-version-check
           cd tests
           pytest -v --cov pyiges --cov-report xml
+          pip install -e ..[full] --disable-pip-version-check --find-links=dist
+          pytest -v --cov pyiges --cov-report xml --expect-full-module
 
       - name: Upload to PyPi
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
