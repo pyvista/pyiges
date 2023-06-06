@@ -19,6 +19,7 @@ setup(
     author='PyVista Developers',
     author_email='info@pyvista.org',
     long_description=io_open(readme_file, encoding="utf-8").read(),
+    long_description_content_type="text/x-rst",
     license='MIT',
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -28,12 +29,16 @@ setup(
         'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX',
         'Operating System :: MacOS',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
     ],
     description='Pythonic IGES reader',
     url='https://github.com/pyvista/pyiges',
-    install_requires=['tqdm', 'geomdl', 'pyvista>=0.28.0'],
+    install_requires=['tqdm', 'numpy'],
+    extras_require={
+        'full' : ['geomdl', 'pyvista>=0.28.0']
+    },
     package_data={'pyiges.examples': ['impeller.igs', 'sample.igs']}
 )

@@ -1,13 +1,22 @@
 name: Unit Testing
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    tags:
+      - "*"
+    branches:
+      - main
 
 jobs:
   unit_tests:
-    runs-on: ubuntu-latest
+    name: Unit testing
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ['3.6', '3.7', '3.8']  # , '3.9' VTK dependent
+        os: [windows-latest, ubuntu-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11']
 
     steps:
       - uses: actions/checkout@v2
@@ -17,10 +26,18 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install
+      - name: Create package
+        run: python setup.py sdist
+
+      - name: Validate package
+        if: ${{ runner.os == 'Linux' }}
         run: |
-          python setup.py sdist
-          pip install dist/*.tar.gz --disable-pip-version-check
+          pip install twine
+          twine check dist/*
+
+      - name: Install package and smoke test
+        run: |
+          pip install -e . --disable-pip-version-check --find-links=dist
           cd tests/
           python -c "import pyiges"
 
@@ -29,6 +46,8 @@ jobs:
           pip install -r requirements_test.txt --disable-pip-version-check
           cd tests
           pytest -v --cov pyiges --cov-report xml
+          pip install -e ..[full] --disable-pip-version-check --find-links=dist
+          pytest -v --cov pyiges --cov-report xml --expect-full-module
 
       - name: Upload to PyPi
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
