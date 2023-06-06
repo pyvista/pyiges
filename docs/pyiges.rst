@@ -15,7 +15,7 @@ class:
     >>> import pyiges
     >>> iges = pyiges.Iges('my_file.iges')
     pyiges.Iges object
-    Description: 
+    Description:
     Number of Entities: 4615
 
 

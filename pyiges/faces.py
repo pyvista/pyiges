@@ -14,7 +14,6 @@ False indicates no outer loop.
 .
 .	.
 .	.
-.	
+.
 3+N	Pointer	LoopN	Pointer to last loop of the face
 """
-

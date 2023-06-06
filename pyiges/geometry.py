@@ -1,22 +1,22 @@
 import os
 
-from pyiges.check_imports import assert_full_module_variant, geomdl, pyvista as pv
-
 import numpy as np
 
+from pyiges.check_imports import assert_full_module_variant, pyvista as pv
 from pyiges.entity import Entity
 
 
 def parse_float(str_value):
     """
-    This fuction converts a string to float just like the built-in
+    This function converts a string to float just like the built-in
     float() function. In addition to "normal" numbers it also handles
-    numbers such as 1.2D3 (equivalent to 1.2E3)
+    numbers such as 1.2D3 (equivalent to 1.2E3).
     """
     try:
         return float(str_value)
     except ValueError:
         return float(str_value.lower().replace("d", "e"))
+
 
 class Point(Entity):
     """IGES Point"""
@@ -47,8 +47,8 @@ class Point(Entity):
         return np.array([self._x, self._y, self._z])
 
     def __repr__(self):
-        s = '--- IGES Point ---' + os.linesep
-        s += "{0}, {1}, {2} {3}".format(self._x, self._y, self._z, os.linesep)
+        s = "--- IGES Point ---" + os.linesep
+        s += f"{self._x}, {self._y}, {self._z} {os.linesep}"
         return s
 
     def __str__(self):
@@ -80,14 +80,15 @@ class Line(Entity):
     @property
     def coordinates(self):
         """Starting and ending point of the line as a ``numpy`` array"""
-        return np.array([[self._x1, self._y1, self._z1],
-                         [self._x2, self._y2, self._z2]])
+        return np.array(
+            [[self._x1, self._y1, self._z1], [self._x2, self._y2, self._z2]]
+        )
 
     def __repr__(self):
-        s = '--- IGES Line ---' + os.linesep
+        s = "--- IGES Line ---" + os.linesep
         s += Entity.__str__(self) + os.linesep
-        s += "From point {0}, {1}, {2} {3}".format(self._x1, self._y1, self._z1, os.linesep)
-        s += "To point {0}, {1}, {2}".format(self._x2, self._y2, self._z2)
+        s += f"From point {self._x1}, {self._y1}, {self._z1} {os.linesep}"
+        s += f"To point {self._x2}, {self._y2}, {self._z2}"
         return s
 
     @assert_full_module_variant
@@ -99,8 +100,9 @@ class Line(Entity):
         mesh : ``pyvista.PolyData``
             ``pyvista`` mesh
         """
-        return pv.Line([self._x1, self._y1, self._z1],
-                       [self._x2, self._y2, self._z2], resolution)
+        return pv.Line(
+            [self._x1, self._y1, self._z1], [self._x2, self._y2, self._z2], resolution
+        )
 
 
 class Transformation(Entity):
@@ -143,22 +145,27 @@ class Transformation(Entity):
         self.t3 = parse_float(parameters[12])
 
     def __repr__(self):
-        txt = 'IGES 124 Transformation Matrix\n'
+        txt = "IGES 124 Transformation Matrix\n"
         txt += str(self.to_affine())
         return txt
 
     def to_affine(self):
         """Return a 4x4 affline transformation matrix"""
-        return np.array([[self.r11, self.r12, self.r13, self.t1],
-                         [self.r21, self.r22, self.r23, self.t2],
-                         [self.r31, self.r32, self.r33, self.t3],
-                         [0, 0, 0, 1]])
+        return np.array(
+            [
+                [self.r11, self.r12, self.r13, self.t1],
+                [self.r21, self.r22, self.r23, self.t2],
+                [self.r31, self.r32, self.r33, self.t3],
+                [0, 0, 0, 1],
+            ]
+        )
 
     @assert_full_module_variant
     def _to_vtk(self):
         """Convert to a vtk transformation matrix"""
         vtkmatrix = pv.vtkmatrix_from_array(self.to_affine())
         import vtk
+
         trans = vtk.vtkTransform()
         trans.SetMatrix(vtkmatrix)
         return trans
@@ -173,6 +180,7 @@ class ConicArc(Entity):
     an ellipse, parabola, or hyperbola.
 
     """
+
     # The definitions of the terms ellipse, parabola, and hyperbola
     # are given in terms of the quantities Q1, Q2, and Q3. These
     # quantities are:
@@ -185,7 +193,6 @@ class ConicArc(Entity):
     # An ellipse if Q2 > 0 and Q1, Q3 < 0.
     # A hyperbola if Q2 < 0 and Q1 != 0.
     # A parabola if Q2 = 0 and Q1 != 0.
-
 
     def _add_parameters(self, parameters):
         """
@@ -217,20 +224,19 @@ class ConicArc(Entity):
         self.z2 = parameters[12]  #  z coordinate of end point
 
     def __repr__(self):
-        info = 'Conic Arc\nIGES Type 104\n'
-        info += 'Start:  (%f, %f, %f)\n' % (self.x1, self.y1, self.z1)
-        info += 'End:    (%f, %f, %f)\n' % (self.x2, self.y2, self.z2)
-        info += 'Coefficient of x**2: %f' % self.a
-        info += 'Coefficient of x*y:  %f' % self.b
-        info += 'Coefficient of y**2: %f' % self.c
-        info += 'Coefficient of x:    %f' % self.d
-        info += 'Coefficient of y:    %f' % self.e
-        info += 'Scalar coefficient:  %f' % self.f
+        info = "Conic Arc\nIGES Type 104\n"
+        info += f"Start:  ({self.x1:f}, {self.y1:f}, {self.z1:f})\n"
+        info += f"End:    ({self.x2:f}, {self.y2:f}, {self.z2:f})\n"
+        info += "Coefficient of x**2: %f" % self.a
+        info += "Coefficient of x*y:  %f" % self.b
+        info += "Coefficient of y**2: %f" % self.c
+        info += "Coefficient of x:    %f" % self.d
+        info += "Coefficient of y:    %f" % self.e
+        info += "Scalar coefficient:  %f" % self.f
         return info
 
     @assert_full_module_variant
     def to_vtk(self):
-
         # a*x**2 + b*x*y + c*y**2 + d*x + e*y + f = 0
         # from sympy import Symbol
         # from sympy.solvers import Solve
@@ -247,7 +253,7 @@ class ConicArc(Entity):
         # x0 = (-b*y - d + sqrt(-4*a*c*y**2 - 4*a*e*y - 4*a*f + b**2*y**2 + 2*b*d*y + d**2))/(2*a)
         # x1 = -(b*y + d + sqrt(-4*a*c*y**2 - 4*a*e*y - 4*a*f + b**2*y**2 + 2*b*d*y + d**2))/(2*a)
 
-        raise NotImplementedError('Not yet implemented')
+        raise NotImplementedError("Not yet implemented")
 
 
 class RationalBSplineCurve(Entity):
@@ -279,8 +285,12 @@ class RationalBSplineCurve(Entity):
 
         # Control points
         self.control_points = []
-        for i in range(9 + self.A + self.K, 9 + self.A + 4*self.K + 1, 3):
-            point = (parse_float(parameters[i]), parse_float(parameters[i+1]), parse_float(parameters[i+2]))
+        for i in range(9 + self.A + self.K, 9 + self.A + 4 * self.K + 1, 3):
+            point = (
+                parse_float(parameters[i]),
+                parse_float(parameters[i + 1]),
+                parse_float(parameters[i + 2]),
+            )
             self.control_points.append(point)
 
         # Parameter values
@@ -297,19 +307,20 @@ class RationalBSplineCurve(Entity):
             self.planar_curve = False
 
     def __str__(self):
-        s = '--- Rational B-Spline Curve ---' + os.linesep
+        s = "--- Rational B-Spline Curve ---" + os.linesep
         s += Entity.__str__(self) + os.linesep
         s += str(self.T) + os.linesep
         s += str(self.W) + os.linesep
         s += str(self.control_points) + os.linesep
-        s += "Parameter: v(0) = {0}    v(1) = {1}".format(self.V0, self.V1) + os.linesep
+        s += f"Parameter: v(0) = {self.V0}    v(1) = {self.V1}" + os.linesep
         if self.planar_curve:
-            s += "Unit normal: {0} {1} {2}".format(self.XNORM, self.YNORM, self.ZNORM)
+            s += f"Unit normal: {self.XNORM} {self.YNORM} {self.ZNORM}"
         return s
 
     @assert_full_module_variant
     def to_geomdl(self):
         from geomdl import NURBS
+
         curve = NURBS.Curve()
         curve.degree = self.M
         curve.ctrlpts = self.control_points
@@ -319,8 +330,7 @@ class RationalBSplineCurve(Entity):
 
     @assert_full_module_variant
     def to_vtk(self, delta=0.01):
-        """Set evaluation delta (controls the number of curve points)
-        """
+        """Set evaluation delta (controls the number of curve points)"""
         # Create a 3-dimensional B-spline Curve
         curve = self.to_geomdl()
         curve.delta = delta
@@ -388,17 +398,17 @@ class RationalBSplineSurface(Entity):
 
     @property
     def k1(self):
-        """ Upper index of first sum"""
+        """Upper index of first sum"""
         return self._k1
 
     @property
     def k2(self):
-        """ Upper index of second sum"""
+        """Upper index of second sum"""
         return self._k2
 
     @property
     def m1(self):
-        """ Degree of first basis functions"""
+        """Degree of first basis functions"""
         return self._m1
 
     @property
@@ -475,7 +485,9 @@ class RationalBSplineSurface(Entity):
         return self._v1
 
     def _add_parameters(self, input_parameters):
-        parameters = np.array([parse_float(param) for param in input_parameters], dtype=float)
+        parameters = np.array(
+            [parse_float(param) for param in input_parameters], dtype=float
+        )
 
         self._k1 = int(parameters[1])  # Upper index of first sum
         self._k2 = int(parameters[2])  # Upper index of second sum
@@ -484,21 +496,34 @@ class RationalBSplineSurface(Entity):
         self._flag1 = bool(parameters[5])  # 0=closed in first direction, 1=not closed
         self._flag2 = bool(parameters[6])  # 0=closed in second direction, 1=not closed
         self._flag3 = bool(parameters[7])  # 0=rational, 1=polynomial
-        self._flag4 = bool(parameters[8])  # 0=nonperiodic in first direction , 1=periodic
-        self._flag5 = bool(parameters[9])  # 0=nonperiodic in second direction , 1=periodic
+        self._flag4 = bool(
+            parameters[8]
+        )  # 0=nonperiodic in first direction , 1=periodic
+        self._flag5 = bool(
+            parameters[9]
+        )  # 0=nonperiodic in second direction , 1=periodic
 
         # load knot sequences
-        self._knot1 = parameters[10:12 + self._k1 + self._m1]
-        self._knot2 = parameters[12 + self._k1 + self._m1: 14 + self._k2 + self._m1 + self._k1 + self._m2]
+        self._knot1 = parameters[10 : 12 + self._k1 + self._m1]
+        self._knot2 = parameters[
+            12 + self._k1 + self._m1 : 14 + self._k2 + self._m1 + self._k1 + self._m2
+        ]
 
         # weights
         st = 14 + self._k2 + self._m1 + self._k1 + self._m2
-        en = st + (1 + self._k2)*(1 + self._k1)
+        en = st + (1 + self._k2) * (1 + self._k1)
         self._weights = parameters[st:en]
 
         # control points
-        st = 14 + self._k2 + self._k1 + self._m1 + self._m2 + (1 + self._k2)*(1 + self._k1)
-        en = st + 3*(1 + self._k2)*(1 + self._k1)
+        st = (
+            14
+            + self._k2
+            + self._k1
+            + self._m1
+            + self._m2
+            + (1 + self._k2) * (1 + self._k1)
+        )
+        en = st + 3 * (1 + self._k2) * (1 + self._k1)
         self._cp = parameters[st:en].reshape(-1, 3)
 
         self._u0 = parameters[-3]  # Start first parameter value
@@ -507,52 +532,53 @@ class RationalBSplineSurface(Entity):
         self._v1 = parameters[-0]  # End second parameter value
 
     def __repr__(self):
-        info = 'Rational B-Spline Surface\n'
-        info += '    Upper index of first sum:          %d\n' % self._k1
-        info += '    Upper index of second sum:         %d\n' % self._k2
-        info += '    Degree of first basis functions:   %d\n' % self._m1
-        info += '    Degree of second basis functions:  %d\n' % self._m2
+        info = "Rational B-Spline Surface\n"
+        info += "    Upper index of first sum:          %d\n" % self._k1
+        info += "    Upper index of second sum:         %d\n" % self._k2
+        info += "    Degree of first basis functions:   %d\n" % self._m1
+        info += "    Degree of second basis functions:  %d\n" % self._m2
 
         if self.flag1:
-            info += '    Closed in the first direction\n'
+            info += "    Closed in the first direction\n"
         else:
-            info += '    Open in the first direction\n'
+            info += "    Open in the first direction\n"
 
         if self.flag2:
-            info += '    Closed in the second direction\n'
+            info += "    Closed in the second direction\n"
         else:
-            info += '    Open in the second direction\n'
+            info += "    Open in the second direction\n"
 
         if self.flag3:
-            info += '    Rational\n'
+            info += "    Rational\n"
         else:
-            info += '    Polynomial\n'
+            info += "    Polynomial\n"
 
         if self.flag4:
-            info += '    Nonperiodic in first direction\n'
+            info += "    Nonperiodic in first direction\n"
         else:
-            info += '    Periodic in the first direction\n'
+            info += "    Periodic in the first direction\n"
 
         if self.flag5:
-            info += '    Nonperiodic in second direction\n'
+            info += "    Nonperiodic in second direction\n"
         else:
-            info += '    Periodic in the second direction\n'
+            info += "    Periodic in the second direction\n"
 
-        info += '    Knot 1: %s\n' % str(self.knot1)
-        info += '    Knot 2: %s\n' % str(self.knot2)
+        info += "    Knot 1: %s\n" % str(self.knot1)
+        info += "    Knot 2: %s\n" % str(self.knot2)
 
-        info += '    u0: %f\n' % self.u0
-        info += '    u1: %f\n' % self.u1
-        info += '    v0: %f\n' % self.v0
-        info += '    v1: %f\n' % self.v1
+        info += "    u0: %f\n" % self.u0
+        info += "    u1: %f\n" % self.u1
+        info += "    v0: %f\n" % self.v0
+        info += "    v1: %f\n" % self.v1
 
-        info += '    Control Points: %d' % len(self._cp)
+        info += "    Control Points: %d" % len(self._cp)
         return info
 
     @assert_full_module_variant
     def to_geomdl(self):
         """Return a ``geommdl.BSpline.Surface``"""
         from geomdl import BSpline
+
         surf = BSpline.Surface()
 
         # Set degrees
@@ -627,7 +653,7 @@ class CircularArc(Entity):
         self.y1 = parse_float(parameters[5])
         self.x2 = parse_float(parameters[6])
         self.y2 = parse_float(parameters[7])
-        self._transform = self.d.get('transform', None)
+        self._transform = self.d.get("transform", None)
 
     @assert_full_module_variant
     def to_vtk(self, resolution=20):
@@ -641,10 +667,9 @@ class CircularArc(Entity):
         start = [self.x1, self.y1, 0]
         end = [self.x2, self.y2, 0]
         center = [self.x, self.y, 0]
-        arc = pv.CircularArc(center=center,
-                             pointa=start,
-                             pointb=end,
-                             resolution=resolution)
+        arc = pv.CircularArc(
+            center=center, pointa=start, pointb=end, resolution=resolution
+        )
         arc.points += [0, 0, self.z]
         if self.transform is not None:
             arc.transform(self.transform._to_vtk())
@@ -657,11 +682,11 @@ class CircularArc(Entity):
             return self.iges[self._transform]
 
     def __repr__(self):
-        info = 'Circular Arc\nIGES Type 100\n'
-        info += 'Center: (%f, %f)\n' % (self.x, self.y)
-        info += 'Start:  (%f, %f)\n' % (self.x1, self.y1)
-        info += 'End:    (%f, %f)\n' % (self.x2, self.y2)
-        info += 'Z Disp: %f' % self.z
+        info = "Circular Arc\nIGES Type 100\n"
+        info += f"Center: ({self.x:f}, {self.y:f})\n"
+        info += f"Start:  ({self.x1:f}, {self.y1:f})\n"
+        info += f"End:    ({self.x2:f}, {self.y2:f})\n"
+        info += "Z Disp: %f" % self.z
         return info
 
 
@@ -698,7 +723,7 @@ class Face(Entity):
         return loops
 
     def __repr__(self):
-        info = 'IGES Type 510: Face\n'
+        info = "IGES Type 510: Face\n"
         # info += 'Center: (%f, %f)\n' % (self.x, self.y)
         # info += 'Start:  (%f, %f)\n' % (self.x1, self.y1)
         # info += 'End:    (%f, %f)\n' % (self.x2, self.y2)
@@ -735,37 +760,42 @@ class Loop(Entity):
 
         c = 0
         for i in range(self.n_edges):
-            edge = {'type': int(self.parameters[2 + c]),
-                    'e1': int(self.parameters[3 + c]),  # first vertex or edge list
-                    'index1': int(self.parameters[4 + c]),  # index of edge in e1
-                    'flag1': bool(self.parameters[5 + c]),  # orientation flag
-                    'k1': int(self.parameters[6 + c])}  # n curves
+            edge = {
+                "type": int(self.parameters[2 + c]),
+                "e1": int(self.parameters[3 + c]),  # first vertex or edge list
+                "index1": int(self.parameters[4 + c]),  # index of edge in e1
+                "flag1": bool(self.parameters[5 + c]),  # orientation flag
+                "k1": int(self.parameters[6 + c]),
+            }  # n curves
             curves = []
-            for j in range(edge['k1']):
-                curve = {'iso': bool(self.parameters[7 + c + j*2]),  # isopara flag
-                         'psc': int(self.parameters[8 + c + j*2])}  # space curve
+            for j in range(edge["k1"]):
+                curve = {
+                    "iso": bool(self.parameters[7 + c + j * 2]),  # isopara flag
+                    "psc": int(self.parameters[8 + c + j * 2]),
+                }  # space curve
                 curves.append(curve)
-            c += 5 + 2*edge['k1']
+            c += 5 + 2 * edge["k1"]
 
-            edge['curves'] = curves
+            edge["curves"] = curves
             self._edges.append(edge)
 
     # @property
     # def edge_lists(self):
-    #     for 
+    #     for
 
     def curves(self):
         """list of curves"""
         pass
 
     def __repr__(self):
-        info = 'IGES Type 508: Loop\n'
+        info = "IGES Type 508: Loop\n"
         return info
 
 
 class EdgeList(Entity):
     """Provides a list of edges, comprised of vertices, for specifying
     B-Rep Geometries."""
+
     _iges_type = 504
 
     def _add_parameters(self, parameters):
@@ -781,7 +811,7 @@ class EdgeList(Entity):
         .
         .	.
         .	.
-        .	
+        .
         5N-3	Pointer	CurveN	First model space curve
         5N-2	Pointer	SVLN	Vertex list for start vertex
         5N-1	INT	SN	Index of start vertex in SVLN
@@ -793,11 +823,13 @@ class EdgeList(Entity):
 
         self.edges = []
         for i in range(self.n_edges):
-            edge = {'curve1': int(parameters[2 + 5*i]),  # first model space curve
-                    'svl': int(parameters[3 + 5*i]),  # vertex list for start vertex
-                    's': int(parameters[4 + 5*i]),  # start index
-                    'evl': int(parameters[5 + 5*i]), # vertex list for end vertex
-                    'e': int(parameters[6 + 5*i])} # index of end vertex in evl n
+            edge = {
+                "curve1": int(parameters[2 + 5 * i]),  # first model space curve
+                "svl": int(parameters[3 + 5 * i]),  # vertex list for start vertex
+                "s": int(parameters[4 + 5 * i]),  # start index
+                "evl": int(parameters[5 + 5 * i]),  # vertex list for end vertex
+                "e": int(parameters[6 + 5 * i]),
+            }  # index of end vertex in evl n
             self.edges.append(edge)
 
     # @property
@@ -806,23 +838,25 @@ class EdgeList(Entity):
 
     def __getitem__(self, indices):
         # TODO: limit spline based on start and end point
-        ptr = self.edges[indices]['curve1']
+        ptr = self.edges[indices]["curve1"]
         return self.iges.from_pointer(ptr)
 
     def __len__(self):
         return len(self.edges)
 
     def __repr__(self):
-        info = 'IGES Type %d: Edge List\n' % self._iges_type
-        return info
+        """Return the representation of EdgesList."""
+        return "IGES Type {self._iges_type}: Edge List\n"
 
 
 class VertexList(Entity):
     """Vertex List (Type 502 Form 1)"""
+
     _iges_type = 502
 
     def _add_parameters(self, parameters):
-        """Parameter Data
+        """Adds Parameter Data.
+
         Index in list	Type of data	Name	Description
         INT	N	Number of vertices in list
         2	REAL	X1	Coordinates of first vertex
@@ -840,7 +874,9 @@ class VertexList(Entity):
         self.n_points = int(parameters[1])
         self.points = []
         for i in range(self.n_points):
-            point = [parse_float(self.parameters[2 + i*3]),
-                     parse_float(self.parameters[3 + i*3]),
-                     parse_float(self.parameters[4 + i*3])]
+            point = [
+                parse_float(self.parameters[2 + i * 3]),
+                parse_float(self.parameters[3 + i * 3]),
+                parse_float(self.parameters[4 + i * 3]),
+            ]
             self.points.append(point)
