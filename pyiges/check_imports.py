@@ -1,7 +1,7 @@
 try:
     import geomdl
     import pyvista
-    from pyvista._vtk import vtkAppendPolyData
+    from vtkmodules.vtkFiltersCore import vtkAppendPolyData
 
     _IS_FULL_MODULE = True
 except (ModuleNotFoundError, ImportError) as exc:
