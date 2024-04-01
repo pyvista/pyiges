@@ -1,4 +1,5 @@
 """Setup for pyiges"""
+
 from io import open as io_open
 import os
 

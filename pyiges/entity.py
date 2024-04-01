@@ -1,4 +1,5 @@
 """Module for the entity class."""
+
 import os
 
 from pyiges.constants import line_font_pattern
