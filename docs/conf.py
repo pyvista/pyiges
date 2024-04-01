@@ -1,6 +1,7 @@
 """
 Configuration file for the Sphinx documentation builder.
 """
+
 import sphinx_rtd_theme
 
 import pyiges
