@@ -1,4 +1,4 @@
-name: Unit Testing
+name: GH Actions
 
 on:
   pull_request:
@@ -9,6 +9,11 @@ on:
     branches:
       - main
 
+# cancel in-progress workflows
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   unit_tests:
     name: Unit testing
@@ -16,44 +21,33 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest]
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Create package
-        run: python setup.py sdist
-
-      - name: Validate package
-        if: ${{ runner.os == 'Linux' }}
+      - name: Install package
         run: |
-          pip install twine
-          twine check dist/*
-
-      - name: Install package and smoke test
-        run: |
-          pip install -e . --disable-pip-version-check --find-links=dist
-          cd tests/
-          python -c "import pyiges"
+          pip install .[test] --disable-pip-version-check
 
       - name: Unit testing
+        run: pytest -v
+
+      - name: Build and validate package
         run: |
-          pip install -r requirements_test.txt --disable-pip-version-check
-          cd tests
-          pytest -v --cov pyiges --cov-report xml
-          pip install -e ..[full] --disable-pip-version-check --find-links=dist
-          pytest -v --cov pyiges --cov-report xml --expect-full-module
+          pip install flit twine
+          flit build
+          twine check dist/*
 
       - name: Upload to PyPi
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
         run: |
-          pip install twine wheel
-          python setup.py sdist bdist_wheel
+          pip install twine
           twine upload --skip-existing dist/pyiges*
         env:
           TWINE_USERNAME: "__token__"
@@ -66,6 +60,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
