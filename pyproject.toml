@@ -33,6 +33,12 @@ requires-python = ">=3.9"
 version = "0.4.dev0"
 
 [project.optional-dependencies]
+docs = [
+  "sphinx",
+  "sphinx_rtd_theme",
+  "sphinx-notfound-page",
+  "sphinx-copybutton"
+]
 full = [
   "geomdl",
   "pyvista>=0.28.0"
@@ -40,12 +46,6 @@ full = [
 test = [
   "pytest",
   "pytest-cov"
-]
-docs = [
-     "sphinx",
-     "sphinx_rtd_theme",
-     "sphinx-notfound-page",
-     "sphinx-copybutton"
 ]
 
 [project.urls]
