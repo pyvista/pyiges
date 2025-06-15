@@ -41,6 +41,12 @@ test = [
   "pytest",
   "pytest-cov"
 ]
+docs = [
+     "sphinx",
+     "sphinx_rtd_theme",
+     "sphinx-notfound-page",
+     "sphinx-copybutton"
+]
 
 [project.urls]
 Documentation = "https://github.com/pyvista/pyiges"
