@@ -4,7 +4,6 @@ from importlib.metadata import PackageNotFoundError, version
 
 from pyiges.iges import Iges, read
 
-
 try:
     __version__ = version("pyminiply")
 except PackageNotFoundError:

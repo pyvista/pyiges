@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - "*"
+    - '*'
     branches:
-      - main
+    - main
 
 # cancel in-progress workflows
 concurrency:
@@ -24,42 +24,42 @@ jobs:
         python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - name: Install package
-        run: |
-          pip install .[test] --disable-pip-version-check
+    - name: Install package
+      run: |
+        pip install .[test] --disable-pip-version-check
 
-      - name: Unit testing
-        run: pytest -v
+    - name: Unit testing
+      run: pytest -v
 
-      - name: Build and validate package
-        run: |
-          pip install flit twine
-          flit build
-          twine check dist/*
+    - name: Build and validate package
+      run: |
+        pip install flit twine
+        flit build
+        twine check dist/*
 
-      - name: Upload to PyPi
-        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
-        run: |
-          pip install twine
-          twine upload --skip-existing dist/pyiges*
-        env:
-          TWINE_USERNAME: "__token__"
-          TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
-          TWINE_REPOSITORY_URL: "https://upload.pypi.org/legacy/"
+    - name: Upload to PyPi
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      run: |
+        pip install twine
+        twine upload --skip-existing dist/pyiges*
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
+        TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
 
   Release:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
     needs: [unit_tests]
     runs-on: ubuntu-latest
     steps:
-      - name: Release
-        uses: softprops/action-gh-release@v2
-        with:
-          generate_release_notes: true
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        generate_release_notes: true

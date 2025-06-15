@@ -10,8 +10,9 @@ except (ModuleNotFoundError, ImportError) as exc:
     vtkAppendPolyData = None
     _IS_FULL_MODULE = False
     _PROBLEM_MSG = (
-        "Import from '{}' failed, to support this feature "
-        "please install pyiges[full]".format(exc.name)
+        "Import from '{}' failed, to support this feature please install pyiges[full]".format(
+            exc.name
+        )
     )
 
 

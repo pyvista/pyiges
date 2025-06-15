@@ -179,9 +179,7 @@ class Iges:
             v1: 128.000000
             Control Points: 16
         """
-        return self._return_type(
-            geometry.RationalBSplineSurface, as_vtk, merge, **kwargs
-        )
+        return self._return_type(geometry.RationalBSplineSurface, as_vtk, merge, **kwargs)
 
     def circular_arcs(self, to_vtk=False, merge=False, **kwargs):
         """All circular_arcs"""
@@ -384,7 +382,7 @@ class Iges:
                         this_entity = entity_list[pointer_dict[directory_pointer]]
                         try:
                             this_entity._add_parameters(parameters)
-                        except Exception as err:
+                        except Exception:
                             print(
                                 "Warning: Could not initialize entity from parameters with Parameter section "
                                 "ending on line {}. Possibly wrong or (yet) unsupported format. Entity will be discarded.".format(

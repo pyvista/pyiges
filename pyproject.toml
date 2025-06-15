@@ -1,57 +1,51 @@
 [build-system]
-requires = ["flit_core>=3.8.0"]
 build-backend = "flit_core.buildapi"
+requires = ["flit_core>=3.8.0"]
 
 [project]
-name = "pyiges"
 authors = [
-    {name = "PyVista Developers", email = "info@pyvista.org"},
+  {name = "PyVista Developers", email = "info@pyvista.org"}
 ]
-readme = "README.rst"
-requires-python = ">=3.9"
-license = {text = "MIT"}
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Science/Research",
-    "Topic :: Scientific/Engineering :: Information Analysis",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: Microsoft :: Windows",
-    "Operating System :: POSIX",
-    "Operating System :: MacOS",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX",
+  "Operating System :: MacOS",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13"
+]
+dependencies = [
+  "tqdm",
+  "numpy"
 ]
 description = "Pythonic IGES reader"
 keywords = ["iges", "cad", "nurbs", "bspline"]
-dependencies = [
-    "tqdm",
-    "numpy",
-]
+license = {text = "MIT"}
+name = "pyiges"
+readme = "README.rst"
+requires-python = ">=3.9"
 version = "0.4.dev0"
-
-[project.urls]
-Homepage = "https://github.com/pyvista/pyiges"
-Documentation = "https://github.com/pyvista/pyiges"
-Repository = "https://github.com/pyvista/pyiges.git"
 
 [project.optional-dependencies]
 full = [
-    "geomdl",
-    "pyvista>=0.28.0",
+  "geomdl",
+  "pyvista>=0.28.0"
 ]
 test = [
-    "pytest",
-    "pytest-cov",
+  "pytest",
+  "pytest-cov"
 ]
 
-[tool.flit.sdist]
-include = [
-    "pyiges/examples/impeller.igs",
-    "pyiges/examples/sample.igs",
-]
+[project.urls]
+Documentation = "https://github.com/pyvista/pyiges"
+Homepage = "https://github.com/pyvista/pyiges"
+Repository = "https://github.com/pyvista/pyiges.git"
 
 [tool.blackdoc]
 # From https://numpydoc.readthedocs.io/en/latest/format.html
@@ -60,17 +54,24 @@ include = [
 # reading the docstrings in text terminals.
 line-length = 75
 
-[tool.pytest.ini_options]
-junit_family='legacy'
-filterwarnings = [
-    'ignore::FutureWarning',
-    'ignore::PendingDeprecationWarning',
-    'ignore::DeprecationWarning',
+[tool.flit.sdist]
+include = [
+  "pyiges/examples/impeller.igs",
+  "pyiges/examples/sample.igs"
 ]
+
+[tool.pytest.ini_options]
 doctest_optionflags = 'NUMBER ELLIPSIS'
+filterwarnings = [
+  'ignore::FutureWarning',
+  'ignore::PendingDeprecationWarning',
+  'ignore::DeprecationWarning'
+]
+junit_family = 'legacy'
 testpaths = 'tests'
 
 [tool.ruff]
+ignore = ["E722"]
 line-length = 100
 
 [tool.ruff.lint]
