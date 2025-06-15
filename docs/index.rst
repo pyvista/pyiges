@@ -1,5 +1,7 @@
-pyIGES Documentation
-====================
+######################
+ pyIGES Documentation
+######################
+
 Python IGES reader with basic functionality to read an IGES file and
 convert some entities to a ``pyvista`` or ``vtk`` mesh.
 
@@ -7,36 +9,39 @@ This module can read in and perform basic parsing of all entities and
 can perform additional parsing and geometry visualization of the
 following entities:
 
-- Vertex List (Type 502 Form 1)
-- Edge List
-- Loop (for specifying a bounded face for BREP geometries
-- Face
-- Circular arc
-- Rational B-Spline Surface
-- Rational B-Spline Curve
-- Conic Arc (Type 104)
-- Line
-- Point
+-  Vertex List (Type 502 Form 1)
+-  Edge List
+-  Loop (for specifying a bounded face for BREP geometries
+-  Face
+-  Circular arc
+-  Rational B-Spline Surface
+-  Rational B-Spline Curve
+-  Conic Arc (Type 104)
+-  Line
+-  Point
 
-Contents
---------
+**********
+ Contents
+**********
+
 .. toctree::
 
-  pyiges
-  geometry
+   pyiges
+   geometry
 
+**************
+ Installation
+**************
 
-Installation
-------------
-
-``pyiges`` is offered in a "full" variant including the conversion features
-and a "pure" parsing module variant.
-The pure variant has no conversion features, no dependencies to ``pyvista,geomdl``,
-and can be installed by removing the ``[full]`` specificator from the following commands.
+``pyiges`` is offered in a "full" variant including the conversion
+features and a "pure" parsing module variant. The pure variant has no
+conversion features, no dependencies to ``pyvista,geomdl``, and can be
+installed by removing the ``[full]`` specificator from the following
+commands.
 
 Install with pip using:
 
-.. code::
+.. code:: bash
 
    pip install pyiges[full]
 
@@ -49,11 +54,13 @@ this repo and install with:
    cd pyiges
    pip install .[full]
 
-Note that the square brackets might need to be escaped or quoted when using ``zsh``.
+Note that the square brackets might need to be escaped or quoted when
+using ``zsh``.
 
+*******
+ Usage
+*******
 
-Usage
------
 The ``pyiges`` module can read in many entities as raw text, but only
 NURBS surfaces and bsplines can be converted to ``pyvista`` meshes.
 
@@ -70,40 +77,44 @@ NURBS surfaces and bsplines can be converted to ``pyvista`` meshes.
 
     # convert all lines to a vtk mesh and plot it
     lines = iges.to_vtk(bsplines=True, surfaces=False, merge=True)
-    lines.plot(color='w', line_width=2)
+    lines.plot(color="w", line_width=2)
 
     # convert all surfaces to a vtk mesh and plot it
-    mesh = iges.to_vtk(bsplines=False, surfaces=True, merge=True, delta=0.05)
-    mesh.plot(color='w', smooth_shading=True)
+    mesh = iges.to_vtk(
+        bsplines=False, surfaces=True, merge=True, delta=0.05
+    )
+    mesh.plot(color="w", smooth_shading=True)
     # control resolution of the mesh by changing "delta"
 
     # save this surface to file
-    mesh.save('mesh.ply')  # as ply
-    mesh.save('mesh.stl')  # as stl
-    mesh.save('mesh.vtk')  # as vtk
-
+    mesh.save("mesh.ply")  # as ply
+    mesh.save("mesh.stl")  # as stl
+    mesh.save("mesh.vtk")  # as vtk
 
 Lines
-~~~~~
+=====
+
 .. image:: https://github.com/pyvista/pyiges/raw/master/docs/images/impeller_lines.png
 
-
 Surfaces
-~~~~~~~~
+========
+
 .. image:: https://github.com/pyvista/pyiges/raw/master/docs/images/impeller_surf.png
 
+*****************
+ Acknowledgments
+*****************
 
-Acknowledgments
----------------
-Substantial code was obtained from or inspired by https://github.com/cfinch/IGES-File-Reader
+Substantial code was obtained from or inspired by
+https://github.com/cfinch/IGES-File-Reader
 
-IGES reference definitions were obtained from `Eclipse IGES Wiki <https://wiki.eclipse.org/IGES_file_Specification#Rational_B-Spline_Curve_.28Type_126.29>`_,
+IGES reference definitions were obtained from `Eclipse IGES Wiki
+<https://wiki.eclipse.org/IGES_file_Specification#Rational_B-Spline_Curve_.28Type_126.29>`_,
 
+####################
+ Indices and tables
+####################
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+-  :ref:`genindex`
+-  :ref:`modindex`
+-  :ref:`search`
