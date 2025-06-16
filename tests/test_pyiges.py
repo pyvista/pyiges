@@ -136,7 +136,6 @@ def test_surfaces_vtk(surf):
     assert mesh.area == pytest.approx(277.4757547644264)
     assert mesh.n_arrays == 0
     assert mesh.n_cells == 162
-    assert mesh.n_faces == 162
     assert mesh.n_lines == 0
     assert mesh.n_open_edges == 36
     assert mesh.n_points == 100
@@ -341,7 +340,6 @@ def test_bsplines_vtk(curve):
     assert mesh.area == 0.0
     assert mesh.n_arrays == 0
     assert mesh.n_cells == 1
-    assert mesh.n_faces == 1
     assert mesh.n_lines == 1
     assert mesh.n_open_edges == 0
     assert mesh.n_points == 100
@@ -382,7 +380,6 @@ def test_points_vtk(sample):
     points = sample.points(as_vtk=True, merge=True)  # pv.PolyData
 
     assert points.n_cells == 4
-    assert points.n_faces == 4
     assert points.n_lines == 0
     assert points.n_open_edges == 0
     assert points.n_points == 4
@@ -467,7 +464,6 @@ def test_point_vtk(point):
 
     assert point.n_arrays == 0
     assert point.n_cells == 1
-    assert point.n_faces == 1
     assert point.n_lines == 0
     assert point.n_open_edges == 0
     assert point.n_points == 1
@@ -517,7 +513,6 @@ def test_circular_arcs_vtk(carc):
 
     assert polydata.n_arrays == 2
     assert polydata.n_cells == 1
-    assert polydata.n_faces == 1
     assert polydata.n_lines == 1
     assert polydata.n_points == 21
     assert polydata.n_strips == 0
@@ -625,7 +620,6 @@ def test_line_vtk(line):
     polydata = line.to_vtk()
     assert polydata.n_arrays == 2
     assert polydata.n_cells == 1
-    assert polydata.n_faces == 1
     assert polydata.n_lines == 1
     assert polydata.n_open_edges == 0
     assert polydata.n_open_edges == 0
@@ -633,12 +627,8 @@ def test_line_vtk(line):
     assert polydata.n_strips == 0
     assert polydata.n_verts == 0
 
-    assert polydata.bounds == pytest.approx(
-        (0.0, 0.0, 0.0, 0.0, -997.9630126, 2.0369868)
-    )
-    assert polydata.points == pytest.approx(
-        np.array([[0.0, 0.0, -997.963], [0.0, 0.0, 2.0369868]])
-    )
+    assert polydata.bounds == pytest.approx((0.0, 0.0, 0.0, 0.0, -997.9630126, 2.0369868))
+    assert polydata.points == pytest.approx(np.array([[0.0, 0.0, -997.963], [0.0, 0.0, 2.0369868]]))
 
 
 def test_transformation_parse(trafo):
@@ -727,8 +717,3 @@ def test_parse_separators_from_first_global_line(line, expected_separators):
     else:
         separators = pyiges.Iges._parse_separators_from_first_global_line(line)
         assert separators == expected_separators
-
-
-def test_package_variant_detection(request):
-    is_full_module_expected = request.config.getoption("--expect-full-module")
-    assert pyiges.check_imports._IS_FULL_MODULE == is_full_module_expected

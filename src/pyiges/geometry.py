@@ -2,7 +2,8 @@ import os
 
 import numpy as np
 
-from pyiges.check_imports import assert_full_module_variant, pyvista as pv
+from pyiges.check_imports import assert_full_module_variant
+from pyiges.check_imports import pyvista as pv
 from pyiges.entity import Entity
 
 
@@ -80,9 +81,7 @@ class Line(Entity):
     @property
     def coordinates(self):
         """Starting and ending point of the line as a ``numpy`` array"""
-        return np.array(
-            [[self._x1, self._y1, self._z1], [self._x2, self._y2, self._z2]]
-        )
+        return np.array([[self._x1, self._y1, self._z1], [self._x2, self._y2, self._z2]])
 
     def __repr__(self):
         s = "--- IGES Line ---" + os.linesep
@@ -100,9 +99,7 @@ class Line(Entity):
         mesh : ``pyvista.PolyData``
             ``pyvista`` mesh
         """
-        return pv.Line(
-            [self._x1, self._y1, self._z1], [self._x2, self._y2, self._z2], resolution
-        )
+        return pv.Line([self._x1, self._y1, self._z1], [self._x2, self._y2, self._z2], resolution)
 
 
 class Transformation(Entity):
@@ -485,9 +482,7 @@ class RationalBSplineSurface(Entity):
         return self._v1
 
     def _add_parameters(self, input_parameters):
-        parameters = np.array(
-            [parse_float(param) for param in input_parameters], dtype=float
-        )
+        parameters = np.array([parse_float(param) for param in input_parameters], dtype=float)
 
         self._k1 = int(parameters[1])  # Upper index of first sum
         self._k2 = int(parameters[2])  # Upper index of second sum
@@ -496,12 +491,8 @@ class RationalBSplineSurface(Entity):
         self._flag1 = bool(parameters[5])  # 0=closed in first direction, 1=not closed
         self._flag2 = bool(parameters[6])  # 0=closed in second direction, 1=not closed
         self._flag3 = bool(parameters[7])  # 0=rational, 1=polynomial
-        self._flag4 = bool(
-            parameters[8]
-        )  # 0=nonperiodic in first direction , 1=periodic
-        self._flag5 = bool(
-            parameters[9]
-        )  # 0=nonperiodic in second direction , 1=periodic
+        self._flag4 = bool(parameters[8])  # 0=nonperiodic in first direction , 1=periodic
+        self._flag5 = bool(parameters[9])  # 0=nonperiodic in second direction , 1=periodic
 
         # load knot sequences
         self._knot1 = parameters[10 : 12 + self._k1 + self._m1]
@@ -515,14 +506,7 @@ class RationalBSplineSurface(Entity):
         self._weights = parameters[st:en]
 
         # control points
-        st = (
-            14
-            + self._k2
-            + self._k1
-            + self._m1
-            + self._m2
-            + (1 + self._k2) * (1 + self._k1)
-        )
+        st = 14 + self._k2 + self._k1 + self._m1 + self._m2 + (1 + self._k2) * (1 + self._k1)
         en = st + 3 * (1 + self._k2) * (1 + self._k1)
         self._cp = parameters[st:en].reshape(-1, 3)
 
@@ -667,9 +651,7 @@ class CircularArc(Entity):
         start = [self.x1, self.y1, 0]
         end = [self.x2, self.y2, 0]
         center = [self.x, self.y, 0]
-        arc = pv.CircularArc(
-            center=center, pointa=start, pointb=end, resolution=resolution
-        )
+        arc = pv.CircularArc(center=center, pointa=start, pointb=end, resolution=resolution)
         arc.points += [0, 0, self.z]
         if self.transform is not None:
             arc.transform(self.transform._to_vtk())

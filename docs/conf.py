@@ -2,14 +2,16 @@
 Configuration file for the Sphinx documentation builder.
 """
 
+import datetime
 import sphinx_rtd_theme
 
 import pyiges
 
 # -- Project information -----------------------------------------------------
 project = "pyiges"
-copyright = "2020, Alex Kaszynski"
 author = "Alex Kaszynski"
+year = datetime.date.today().year
+copyright = f"{year}, {author}"
 release = version = pyiges.__version__
 
 # # Manage errors

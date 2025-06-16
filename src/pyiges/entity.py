@@ -49,8 +49,7 @@ class Entity:
             if key == "status_number":
                 # Get a list of four 2-digit numbers with spaces removed.
                 separated_status_numbers = [
-                    string[i : i + 2].replace(" ", "0")
-                    for i in range(0, len(string), 2)
+                    string[i : i + 2].replace(" ", "0") for i in range(0, len(string), 2)
                 ]
 
                 # Join these status numbers together as a single string.
