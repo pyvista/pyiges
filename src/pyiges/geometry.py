@@ -277,7 +277,7 @@ class RationalBSplineCurve(Entity):
 
         # Weights
         self.W = []
-        for i in range(self.A + 8, self.A + self.K + 8):
+        for i in range(self.A + 8, self.A + self.K + 8 + 1):
             self.W.append(parse_float(parameters[i]))
 
         # Control points
@@ -321,7 +321,7 @@ class RationalBSplineCurve(Entity):
         curve = NURBS.Curve()
         curve.degree = self.M
         curve.ctrlpts = self.control_points
-        curve.weights = self.W + [1]
+        curve.weights = self.W
         curve.knotvector = self.T  # Set knot vector
         return curve
 
