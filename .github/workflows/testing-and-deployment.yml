@@ -44,15 +44,33 @@ jobs:
         flit build
         twine check dist/*
 
-    - name: Upload to PyPi
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+  pypi:
+    name: Publish to PyPI
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    needs: [unit_tests]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pyiges
+    permissions:
+      id-token: write # this permission is mandatory for trusted publishing
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.13"
+
+    - name: Build package
       run: |
-        pip install twine
-        twine upload --skip-existing dist/pyiges*
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
-        TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
+        pip install flit
+        flit build
+
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
 
   Release:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
