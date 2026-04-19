@@ -30,7 +30,7 @@ license = {text = "MIT"}
 name = "pyiges"
 readme = "README.rst"
 requires-python = ">=3.9"
-version = "0.3.2"
+version = "0.3.3"
 
 [project.optional-dependencies]
 docs = [
