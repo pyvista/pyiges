@@ -1,3 +1,5 @@
+"""IGES entity classes for points, curves, surfaces, and B-Rep elements."""
+
 import os
 
 import numpy as np
@@ -8,10 +10,11 @@ from pyiges.entity import Entity
 
 
 def parse_float(str_value):
-    """
-    This function converts a string to float just like the built-in
-    float() function. In addition to "normal" numbers it also handles
-    numbers such as 1.2D3 (equivalent to 1.2E3).
+    """Convert a string to ``float``, accepting Fortran ``D`` exponents.
+
+    In addition to "normal" numbers it also handles values such as
+    ``1.2D3`` (equivalent to ``1.2E3``) that appear in IGES files
+    written by Fortran-era CAD systems.
     """
     try:
         return float(str_value)
@@ -20,7 +23,7 @@ def parse_float(str_value):
 
 
 class Point(Entity):
-    """IGES Point"""
+    """IGES Point."""
 
     def _add_parameters(self, parameters):
         self._x = parse_float(parameters[1])
@@ -29,35 +32,37 @@ class Point(Entity):
 
     @property
     def x(self):
-        """X coordinate"""
+        """X coordinate."""
         return self._x
 
     @property
     def y(self):
-        """Y coordinate"""
+        """Y coordinate."""
         return self._y
 
     @property
     def z(self):
-        """Z coordinate"""
+        """Z coordinate."""
         return self._z
 
     @property
     def coordinate(self):
-        """Coordinate of the point as a numpy array"""
+        """Coordinate of the point as a numpy array."""
         return np.array([self._x, self._y, self._z])
 
     def __repr__(self):
+        """Return a multi-line string with the point coordinates."""
         s = "--- IGES Point ---" + os.linesep
         s += f"{self._x}, {self._y}, {self._z} {os.linesep}"
         return s
 
     def __str__(self):
+        """Return the same multi-line representation as ``__repr__``."""
         return self.__repr__()
 
     @assert_full_module_variant
     def to_vtk(self):
-        """Point represented as a ``pyvista.PolyData`` Mesh
+        """Return the point as a ``pyvista.PolyData`` mesh.
 
         Returns
         -------
@@ -68,7 +73,7 @@ class Point(Entity):
 
 
 class Line(Entity):
-    """IGES Straight line segment"""
+    """IGES straight line segment."""
 
     def _add_parameters(self, parameters):
         self._x1 = parse_float(parameters[1])
@@ -80,10 +85,11 @@ class Line(Entity):
 
     @property
     def coordinates(self):
-        """Starting and ending point of the line as a ``numpy`` array"""
+        """Starting and ending point of the line as a ``numpy`` array."""
         return np.array([[self._x1, self._y1, self._z1], [self._x2, self._y2, self._z2]])
 
     def __repr__(self):
+        """Return a multi-line string with the line endpoints."""
         s = "--- IGES Line ---" + os.linesep
         s += Entity.__str__(self) + os.linesep
         s += f"From point {self._x1}, {self._y1}, {self._z1} {os.linesep}"
@@ -92,19 +98,25 @@ class Line(Entity):
 
     @assert_full_module_variant
     def to_vtk(self, resolution=1):
-        """Line represented as a ``pyvista.PolyData`` Mesh
+        """Return the line as a ``pyvista.PolyData`` mesh.
 
         Returns
         -------
         mesh : ``pyvista.PolyData``
             ``pyvista`` mesh
         """
-        return pv.Line([self._x1, self._y1, self._z1], [self._x2, self._y2, self._z2], resolution)
+        return pv.Line(
+            [self._x1, self._y1, self._z1],
+            [self._x2, self._y2, self._z2],
+            resolution=resolution,
+        )
 
 
 class Transformation(Entity):
-    """Transforms entities by matrix multiplication and vector
-    addition to give a translation, as shown below:
+    """IGES Type 124 transformation matrix.
+
+    Transforms entities by matrix multiplication and vector addition
+    to give a translation, as shown below.
 
     Notes
     -----
@@ -117,7 +129,8 @@ class Transformation(Entity):
     """
 
     def _add_parameters(self, parameters):
-        """
+        """Parse the twelve REAL coefficients of the 3x4 transform matrix.
+
         Index in list	Type of data	Name	Description
         1	REAL	R11	First row
         2	REAL	R12	..
@@ -142,12 +155,13 @@ class Transformation(Entity):
         self.t3 = parse_float(parameters[12])
 
     def __repr__(self):
+        """Return a multi-line string with the affine matrix."""
         txt = "IGES 124 Transformation Matrix\n"
         txt += str(self.to_affine())
         return txt
 
     def to_affine(self):
-        """Return a 4x4 affline transformation matrix"""
+        """Return a 4x4 affine transformation matrix."""
         return np.array(
             [
                 [self.r11, self.r12, self.r13, self.t1],
@@ -159,7 +173,7 @@ class Transformation(Entity):
 
     @assert_full_module_variant
     def _to_vtk(self):
-        """Convert to a vtk transformation matrix"""
+        """Convert to a vtk transformation matrix."""
         vtkmatrix = pv.vtkmatrix_from_array(self.to_affine())
         import vtk
 
@@ -169,13 +183,12 @@ class Transformation(Entity):
 
 
 class ConicArc(Entity):
-    """Conic Arc (Type 104)
-    Arc defined by the equation:
+    """IGES Type 104 conic arc.
+
+    Arc defined by the equation
     ``A*x**2 + B*x*y + C*y**2 + D*x + E*y + F = 0``
-
-    with a Transformation Matrix (Entity 124). Can define
-    an ellipse, parabola, or hyperbola.
-
+    with a Transformation Matrix (Entity 124). Can define an ellipse,
+    parabola, or hyperbola.
     """
 
     # The definitions of the terms ellipse, parabola, and hyperbola
@@ -192,7 +205,8 @@ class ConicArc(Entity):
     # A parabola if Q2 = 0 and Q1 != 0.
 
     def _add_parameters(self, parameters):
-        """
+        """Parse the six conic coefficients and two endpoints.
+
         Index	Type	Name	Description
         1	REAL	A	coefficient of xt^2
         2	REAL	B	coefficient of xtyt
@@ -221,6 +235,7 @@ class ConicArc(Entity):
         self.z2 = parameters[12]  #  z coordinate of end point
 
     def __repr__(self):
+        """Return a multi-line string with the conic coefficients."""
         info = "Conic Arc\nIGES Type 104\n"
         info += f"Start:  ({self.x1:f}, {self.y1:f}, {self.z1:f})\n"
         info += f"End:    ({self.x2:f}, {self.y2:f}, {self.z2:f})\n"
@@ -234,6 +249,7 @@ class ConicArc(Entity):
 
     @assert_full_module_variant
     def to_vtk(self):
+        """Tessellate the conic arc as a ``pyvista.PolyData`` (not yet implemented)."""
         # a*x**2 + b*x*y + c*y**2 + d*x + e*y + f = 0
         # from sympy import Symbol
         # from sympy.solvers import Solve
@@ -254,9 +270,9 @@ class ConicArc(Entity):
 
 
 class RationalBSplineCurve(Entity):
-    """Rational B-Spline Curve
-    IGES Spec v5.3 p. 123 Section 4.23
-    See also Appendix B, p. 545
+    """Rational B-Spline curve.
+
+    See IGES Spec v5.3 p. 123 Section 4.23, and Appendix B p. 545.
     """
 
     def _add_parameters(self, parameters):
@@ -304,6 +320,7 @@ class RationalBSplineCurve(Entity):
             self.planar_curve = False
 
     def __str__(self):
+        """Return a multi-line string with knots, weights, and control points."""
         s = "--- Rational B-Spline Curve ---" + os.linesep
         s += Entity.__str__(self) + os.linesep
         s += str(self.T) + os.linesep
@@ -316,6 +333,7 @@ class RationalBSplineCurve(Entity):
 
     @assert_full_module_variant
     def to_geomdl(self):
+        """Return a ``geomdl.NURBS.Curve`` built from this entity's parameters."""
         from geomdl import NURBS
 
         curve = NURBS.Curve()
@@ -327,7 +345,14 @@ class RationalBSplineCurve(Entity):
 
     @assert_full_module_variant
     def to_vtk(self, delta=0.01):
-        """Set evaluation delta (controls the number of curve points)"""
+        """Tessellate the curve as a ``pyvista.PolyData`` polyline.
+
+        Parameters
+        ----------
+        delta : float, optional
+            Evaluation delta passed to ``geomdl``. Smaller values give
+            denser tessellations at the cost of compute time.
+        """
         # Create a 3-dimensional B-spline Curve
         curve = self.to_geomdl()
         curve.delta = delta
@@ -345,8 +370,7 @@ class RationalBSplineCurve(Entity):
 
 
 class RationalBSplineSurface(Entity):
-    """Rational B-Spline Surface
-
+    """Rational B-Spline surface.
 
     Examples
     --------
@@ -395,37 +419,37 @@ class RationalBSplineSurface(Entity):
 
     @property
     def k1(self):
-        """Upper index of first sum"""
+        """Upper index of first sum."""
         return self._k1
 
     @property
     def k2(self):
-        """Upper index of second sum"""
+        """Upper index of second sum."""
         return self._k2
 
     @property
     def m1(self):
-        """Degree of first basis functions"""
+        """Degree of first basis functions."""
         return self._m1
 
     @property
     def m2(self):
-        """Degree of second basis functions"""
+        """Degree of second basis functions."""
         return self._m2
 
     @property
     def flag1(self):
-        """Closed in the first direction"""
+        """Closed in the first direction."""
         return self._flag1
 
     @property
     def flag2(self):
-        """Closed in the second direction"""
+        """Closed in the second direction."""
         return self._flag2
 
     @property
     def flag3(self):
-        """Polynominal
+        """Polynomial flag.
 
         ``False`` - rational
         ``True``  - polynomial
@@ -434,51 +458,51 @@ class RationalBSplineSurface(Entity):
 
     @property
     def flag4(self):
-        """First direction periodic"""
+        """First direction periodic."""
         return self._flag4
 
     @property
     def flag5(self):
-        """Second direction Periodic"""
+        """Second direction periodic."""
         return self._flag5
 
     @property
     def knot1(self):
-        """First Knot Sequences"""
+        """First knot sequence."""
         return self._knot1
 
     @property
     def knot2(self):
-        """Second Knot Sequences"""
+        """Second knot sequence."""
         return self._knot2
 
     @property
     def weights(self):
-        """First Knot Sequences"""
+        """Control-point weights."""
         return self._weights
 
     def control_points(self):
-        """Control points"""
+        """Control points."""
         return self._cp
 
     @property
     def u0(self):
-        """Start first parameter value"""
+        """Start first parameter value."""
         return self._u0
 
     @property
     def u1(self):
-        """End first parameter value"""
+        """End first parameter value."""
         return self._u1
 
     @property
     def v0(self):
-        """Start second parameter value"""
+        """Start second parameter value."""
         return self._v0
 
     @property
     def v1(self):
-        """End second parameter value"""
+        """End second parameter value."""
         return self._v1
 
     def _add_parameters(self, input_parameters):
@@ -516,6 +540,7 @@ class RationalBSplineSurface(Entity):
         self._v1 = parameters[-0]  # End second parameter value
 
     def __repr__(self):
+        """Return a multi-line summary of the surface parameters."""
         info = "Rational B-Spline Surface\n"
         info += "    Upper index of first sum:          %d\n" % self._k1
         info += "    Upper index of second sum:         %d\n" % self._k2
@@ -560,7 +585,7 @@ class RationalBSplineSurface(Entity):
 
     @assert_full_module_variant
     def to_geomdl(self):
-        """Return a ``geommdl.BSpline.Surface``"""
+        """Return a ``geomdl.BSpline.Surface`` built from this entity's parameters."""
         from geomdl import BSpline
 
         surf = BSpline.Surface()
@@ -581,7 +606,7 @@ class RationalBSplineSurface(Entity):
 
     @assert_full_module_variant
     def to_vtk(self, delta=0.025):
-        """Return a pyvista.PolyData Mesh
+        """Return a pyvista.PolyData mesh.
 
         Parameters
         ----------
@@ -614,11 +639,10 @@ class RationalBSplineSurface(Entity):
 
 
 class CircularArc(Entity):
-    """Circular Arc
+    """IGES Type 100 circular arc.
 
-    Type 100: Simple circular arc of constant radius. Usually defined
-    with a Transformation Matrix Entity (Type 124).
-
+    Simple circular arc of constant radius. Usually defined with a
+    Transformation Matrix Entity (Type 124).
     """
 
     def _add_parameters(self, parameters):
@@ -641,7 +665,7 @@ class CircularArc(Entity):
 
     @assert_full_module_variant
     def to_vtk(self, resolution=20):
-        """Circular arc represented as a ``pyvista.PolyData`` Mesh
+        """Return the circular arc as a ``pyvista.PolyData`` mesh.
 
         Returns
         -------
@@ -660,10 +684,12 @@ class CircularArc(Entity):
 
     @property
     def transform(self):
+        """Return the referenced :class:`Transformation` entity, if any."""
         if self._transform is not None:
             return self.iges[self._transform]
 
     def __repr__(self):
+        """Return a multi-line string with the arc's center and endpoints."""
         info = "Circular Arc\nIGES Type 100\n"
         info += f"Center: ({self.x:f}, {self.y:f})\n"
         info += f"Start:  ({self.x1:f}, {self.y1:f})\n"
@@ -673,12 +699,15 @@ class CircularArc(Entity):
 
 
 class Face(Entity):
-    """Defines a bound portion of three dimensional space (R^3) which
-    has a finite area. Used to construct B-Rep Geometries."""
+    """IGES Type 510 face.
+
+    Defines a bound portion of three-dimensional space (R^3) which has
+    a finite area. Used to construct B-Rep geometries.
+    """
 
     def _add_parameters(self, parameters):
-        """
-        Parameter Data
+        """Parse the surface pointer, outer-loop flag, and per-loop pointers.
+
         Index	Type	Name	Description
         Pointer	Surface	Underlying surface
         2	INT	N	Number of loops
@@ -698,6 +727,7 @@ class Face(Entity):
 
     @property
     def loops(self):
+        """Resolve the face's loop pointers into a list of :class:`Loop` entities."""
         loops = []
         for ptr in self.loop_pointers:
             loops.append(self.iges.from_pointer(ptr))
@@ -705,6 +735,7 @@ class Face(Entity):
         return loops
 
     def __repr__(self):
+        """Return a short identifier string for the face."""
         info = "IGES Type 510: Face\n"
         # info += 'Center: (%f, %f)\n' % (self.x, self.y)
         # info += 'Start:  (%f, %f)\n' % (self.x1, self.y1)
@@ -714,11 +745,14 @@ class Face(Entity):
 
 
 class Loop(Entity):
-    """Defines a loop, specifying a bounded face, for B-Rep
-    geometries."""
+    """IGES Type 508 loop.
+
+    Defines a loop, specifying a bounded face, for B-Rep geometries.
+    """
 
     def _add_parameters(self, parameters):
-        """Parameter Data
+        """Parse the loop's per-edge type, vertex/edge pointers, and curves.
+
         Index   Type    Name                Description
         1       INT     N                   N Edges in loop
         2	INT	Type1	            Type of Edge 1
@@ -766,22 +800,27 @@ class Loop(Entity):
     #     for
 
     def curves(self):
-        """list of curves"""
+        """Return the list of curves bounding the loop (not yet implemented)."""
         pass
 
     def __repr__(self):
+        """Return a short identifier string for the loop."""
         info = "IGES Type 508: Loop\n"
         return info
 
 
 class EdgeList(Entity):
-    """Provides a list of edges, comprised of vertices, for specifying
-    B-Rep Geometries."""
+    """IGES Type 504 edge list.
+
+    Provides a list of edges, comprised of vertices, for specifying
+    B-Rep geometries.
+    """
 
     _iges_type = 504
 
     def _add_parameters(self, parameters):
-        """
+        """Parse the edge count and per-edge curve/vertex pointer tuples.
+
         Parameter Data
         Index in list	Type of data	Name	Description
         INT	N	Number of Edges in list
@@ -819,11 +858,13 @@ class EdgeList(Entity):
     #     for
 
     def __getitem__(self, indices):
+        """Resolve the model-space curve for the edge at ``indices``."""
         # TODO: limit spline based on start and end point
         ptr = self.edges[indices]["curve1"]
         return self.iges.from_pointer(ptr)
 
     def __len__(self):
+        """Return the number of edges in the list."""
         return len(self.edges)
 
     def __repr__(self):
@@ -832,12 +873,12 @@ class EdgeList(Entity):
 
 
 class VertexList(Entity):
-    """Vertex List (Type 502 Form 1)"""
+    """IGES Type 502 Form 1 vertex list."""
 
     _iges_type = 502
 
     def _add_parameters(self, parameters):
-        """Adds Parameter Data.
+        """Add parameter data.
 
         Index in list	Type of data	Name	Description
         INT	N	Number of vertices in list

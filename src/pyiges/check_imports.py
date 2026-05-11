@@ -1,3 +1,5 @@
+"""Optional-dependency probes for the ``[full]`` install variant."""
+
 try:
     import geomdl
     import pyvista
@@ -17,6 +19,13 @@ except (ModuleNotFoundError, ImportError) as exc:
 
 
 def assert_full_module_variant(inner_func):
+    """Wrap a function to require the optional ``[full]`` install variant.
+
+    Raises an exception at call time if any of ``pyvista``, ``geomdl``,
+    or VTK could not be imported, instructing the user to install
+    ``pyiges[full]``.
+    """
+
     def safe_func(*a, **kw):
         if not _IS_FULL_MODULE:
             raise Exception(_PROBLEM_MSG)

@@ -6,7 +6,7 @@ from pyiges.constants import line_font_pattern
 
 
 class Entity:
-    """Generic IGES entity
+    """Generic IGES entity.
 
     Examples
     --------
@@ -35,11 +35,18 @@ class Entity:
     """
 
     def __init__(self, iges):
+        """Initialize an empty entity bound to its parent ``Iges`` reader."""
         self.d = dict()
         self.parameters = []
         self.iges = iges
 
     def add_section(self, string, key, type="int"):
+        """Parse one fixed-width directory-section field and store it under ``key``.
+
+        Handles the special-case ``status_number`` field, which is four
+        space-padded 2-digit values that must be normalised before
+        casting to ``int``.
+        """
         string = string.strip()
         if type == "string":
             self.d[key] = string
@@ -63,6 +70,7 @@ class Entity:
                 self.d[key] = None
 
     def __str__(self):
+        """Return the multi-line directory-section dump used by ``print``."""
         s = "----- Entity -----" + os.linesep
         s += str(self.d["entity_type_number"]) + os.linesep
         s += str(self.d["parameter_pointer"]) + os.linesep
