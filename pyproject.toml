@@ -32,6 +32,11 @@ readme = "README.rst"
 requires-python = ">=3.9"
 version = "0.3.2"
 
+# Requires pyvista >= 0.48
+[project.entry-points."pyvista.readers"]
+".iges" = "pyiges:read_as_mesh"
+".igs" = "pyiges:read_as_mesh"
+
 [project.optional-dependencies]
 docs = [
   "sphinx",

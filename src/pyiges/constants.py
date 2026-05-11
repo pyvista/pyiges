@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+"""IGES protocol constants."""
 
 line_font_pattern = {
     None: "Default",

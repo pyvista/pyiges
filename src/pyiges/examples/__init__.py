@@ -1,3 +1,5 @@
+"""Bundled example IGES files for documentation and tests."""
+
 import os
 
 filepath = os.path.dirname(__file__)
