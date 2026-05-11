@@ -1,3 +1,5 @@
+"""IGES file reader and the top-level :class:`Iges` container."""
+
 from tqdm import tqdm
 
 from pyiges import geometry
@@ -6,7 +8,7 @@ from pyiges.entity import Entity
 
 
 class Iges:
-    """pyiges.Iges object
+    """In-memory representation of a parsed IGES file.
 
     Parameters
     ----------
@@ -24,11 +26,12 @@ class Iges:
     """
 
     def __init__(self, filename):
+        """Read ``filename`` and populate the entity list."""
         self._read(filename)
         self._desc = ""
 
     def entities(self):
-        """Return a list of all entities
+        """Return a list of all entities.
 
         Examples
         --------
@@ -51,7 +54,7 @@ class Iges:
         merge=True,
         progress=tqdm,
     ):
-        """Converts entities to a vtk object
+        """Convert entities to a vtk object.
 
         Parameters
         ----------
@@ -124,27 +127,27 @@ class Iges:
         return items
 
     def points(self, as_vtk=False, merge=False, **kwargs):
-        """Return all points"""
+        """Return all points."""
         return self._return_type(geometry.Point, as_vtk, merge, **kwargs)
 
     def edge_lists(self, as_vtk=False, merge=False, **kwargs):
-        """All Edge Lists"""
+        """Return all edge lists."""
         return self._return_type(geometry.EdgeList, as_vtk, merge, **kwargs)
 
     def vertex_lists(self, as_vtk=False, merge=False, **kwargs):
-        """All Point Lists"""
+        """Return all point lists."""
         return self._return_type(geometry.VertexList, as_vtk, merge, **kwargs)
 
     def lines(self, as_vtk=False, merge=False, **kwargs):
-        """All lines"""
+        """Return all lines."""
         return self._return_type(geometry.Line, as_vtk, merge, **kwargs)
 
     def bsplines(self, as_vtk=False, merge=False, **kwargs):
-        """All bsplines"""
+        """Return all bsplines."""
         return self._return_type(geometry.RationalBSplineCurve, as_vtk, merge, **kwargs)
 
     def bspline_surfaces(self, as_vtk=False, merge=False, **kwargs):
-        """All bsplines
+        """Return all bspline surfaces.
 
         Examples
         --------
@@ -182,20 +185,23 @@ class Iges:
         return self._return_type(geometry.RationalBSplineSurface, as_vtk, merge, **kwargs)
 
     def circular_arcs(self, to_vtk=False, merge=False, **kwargs):
-        """All circular_arcs"""
+        """Return all circular arcs."""
         return self._return_type(geometry.CircularArc, to_vtk, merge, **kwargs)
 
     def conic_arcs(self, as_vtk=False, merge=False, **kwargs):
+        """Return all conic arcs."""
         return self._return_type(geometry.ConicArc, as_vtk, merge, **kwargs)
 
     def faces(self, as_vtk=False, merge=False, **kwargs):
+        """Return all B-Rep faces."""
         return self._return_type(geometry.Face, as_vtk, merge, **kwargs)
 
     def loops(self, as_vtk=False, merge=False, **kwargs):
+        """Return all B-Rep loops."""
         return self._return_type(geometry.Loop, as_vtk, merge, **kwargs)
 
     def _return_type(self, iges_type, to_vtk=False, merge=False, **kwargs):
-        """Return an iges type"""
+        """Return entities matching ``iges_type``, optionally tessellated and merged."""
         items = []
         for entity in self:
             if isinstance(entity, iges_type):
@@ -216,19 +222,22 @@ class Iges:
         return items
 
     def __iter__(self):
+        """Iterate over the contained entities."""
         yield from self._entities
 
     def __len__(self):
+        """Return the number of contained entities."""
         return len(self._entities)
 
     def __repr__(self):
+        """Return a short summary string with the entity count."""
         info = "pyiges.Iges object\n"
         info += "Description: %s\n" % self._desc
         info += "Number of Entities: %d" % len(self)
         return info
 
     def from_pointer(self, ptr):
-        """Return an iges object according to an iges pointer"""
+        """Return the entity addressed by an IGES pointer."""
         return self[self._pointers[ptr]]
 
     @staticmethod
@@ -405,12 +414,12 @@ class Iges:
         self._pointers = pointer_dict
 
     def __getitem__(self, index):
-        """Get an item by its pointer"""
+        """Get an item by its pointer."""
         return self._entities[self._pointers[index]]
 
     @property
     def items(self):
-        """IGES items
+        """Return the list of contained IGES entities.
 
         Examples
         --------
@@ -427,7 +436,6 @@ class Iges:
 
 def read(filename):
     """Read an iges file.
-
 
     Parameters
     ----------
