@@ -10,6 +10,11 @@ from pyiges import examples
 DIR_TESTS_REFERENCE_DATA = os.path.join(os.path.dirname(__file__), "reference_data")
 
 
+def strip_params(params):
+    """Strip leading/trailing whitespace from each string in a nested list of parameter rows."""
+    return [[s.strip() for s in row] for row in params]
+
+
 def adjust_depending_on_package_variant(test_func):
     """If the full module is present, run test as usual,
     otherwise assert that the error is triggered as intended.
@@ -180,7 +185,104 @@ def test_surfaces_to_geomdl(surf):
 
 
 def test_surfaces_parse(surf):
-    assert surf.parameters == []
+    assert strip_params(surf.parameters) == [
+        [
+            "128",
+            "3",
+            "3",
+            "3",
+            "3",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0.",
+            "0.",
+            "0.",
+            "0.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "0.",
+            "0.",
+            "0.",
+            "0.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "0.995697775241349",
+            "0.995697775241349",
+            "1.",
+            "0.995162717606626",
+            "0.990881303924052",
+            "0.990881303924052",
+            "0.995162717606626",
+            "0.995162717606626",
+            "0.990881303924052",
+            "0.990881303924052",
+            "0.995162717606626",
+            "1.",
+            "0.995697775241349",
+            "0.995697775241349",
+            "1.",
+            "-26.902905334",
+            "-16.51153913",
+            "-8.876323512",
+            "-25.851820351",
+            "-15.866440371",
+            "-21.167794775",
+            "-25.995725563",
+            "-15.954761558",
+            "-33.519826531",
+            "-27.332763631",
+            "-16.775362758",
+            "-45.772995131",
+            "-28.232974775",
+            "-14.344404257",
+            "-8.876323512",
+            "-27.129924549",
+            "-13.783974529",
+            "-21.167794775",
+            "-27.28094438",
+            "-13.860703585",
+            "-33.519826531",
+            "-28.684085103",
+            "-14.573601108",
+            "-45.772995131",
+            "-29.292803148",
+            "-12.033057876",
+            "-8.876323512",
+            "-28.148345882",
+            "-11.562931461",
+            "-21.167794775",
+            "-28.305034796",
+            "-11.62729699",
+            "-33.519826531",
+            "-29.760847559",
+            "-12.225323719",
+            "-45.772995131",
+            "-30.067010387",
+            "-9.611041892",
+            "-8.876323512",
+            "-28.892305175",
+            "-9.235542604",
+            "-21.167794775",
+            "-29.05313537",
+            "-9.286952628",
+            "-33.519826531",
+            "-30.547425187",
+            "-9.764608432",
+            "-45.772995131",
+            "0.",
+            "1.",
+            "0.",
+            "1.",
+        ]
+    ]
     assert surf.sequence_number == 3
 
     assert surf.flag1 is False
@@ -268,7 +370,100 @@ def test_surfaces_parse(surf):
 
 
 def test_bsplines_parse(curve):
-    assert curve.parameters == []
+    assert strip_params(curve.parameters) == [
+        [
+            "126",
+            "14",
+            "2",
+            "1",
+            "0",
+            "1",
+            "0",
+            "0.",
+            "0.",
+            "0.",
+            "0.25",
+            "0.25",
+            "0.375",
+            "0.375",
+            "0.5",
+            "0.5",
+            "0.625",
+            "0.625",
+            "0.75",
+            "0.75",
+            "0.875",
+            "0.875",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "1.",
+            "0.531027642",
+            "0.127235606",
+            "0.",
+            "0.53482791",
+            "0.099559574",
+            "0.",
+            "0.537603234",
+            "0.077944022",
+            "0.",
+            "0.539206635",
+            "0.06545597",
+            "0.",
+            "0.540802737",
+            "0.052996393",
+            "0.",
+            "0.542675511",
+            "0.038377045",
+            "0.",
+            "0.544208805",
+            "0.028733039",
+            "0.",
+            "0.546564848",
+            "0.013914155",
+            "0.",
+            "0.548603824",
+            "0.009169564",
+            "0.",
+            "0.551376925",
+            "0.002716702",
+            "0.",
+            "0.554223526",
+            "0.012546793",
+            "0.",
+            "0.556570985",
+            "0.020653212",
+            "0.",
+            "0.557884113",
+            "0.035401282",
+            "0.",
+            "0.55898716",
+            "0.047789894",
+            "0.",
+            "0.559345007",
+            "0.06395869",
+            "0.",
+            "0.",
+            "1.",
+            "0.",
+            "0.",
+            "1.",
+        ]
+    ]
     assert curve.sequence_number == 5
 
     assert curve.A == 17
@@ -400,10 +595,18 @@ def test_points_parse(sample):
     assert points[2].coordinate == pytest.approx((1.0, 1.0, 0.0))
     assert points[3].coordinate == pytest.approx((0.0, 1.0, 0.0))
 
-    assert points[0].parameters == []
-    assert points[1].parameters == []
-    assert points[2].parameters == []
-    assert points[3].parameters == []
+    assert strip_params(points[0].parameters) == [
+        ["116", "0.00000000000", "0.00000000000", "0.00000000000", "0", "0", "0", "0"]
+    ]
+    assert strip_params(points[1].parameters) == [
+        ["116", "1.00000000000", "0.00000000000", "0.00000000000", "0", "0", "0", "0"]
+    ]
+    assert strip_params(points[2].parameters) == [
+        ["116", "1.00000000000", "1.00000000000", "0.00000000000", "0", "0", "0", "0"]
+    ]
+    assert strip_params(points[3].parameters) == [
+        ["116", "0.00000000000", "1.00000000000", "0.00000000000", "0", "0", "0", "0"]
+    ]
 
     assert points[0].sequence_number == 1
     assert points[1].sequence_number == 3
@@ -432,7 +635,9 @@ def test_points_parse(sample):
 
 
 def test_point_parse(point):
-    assert point.parameters == []
+    assert strip_params(point.parameters) == [
+        ["116", "0.00000000000", "0.00000000000", "0.00000000000", "0", "0", "0", "0"]
+    ]
     assert point.sequence_number == 1
 
     assert point.coordinate == pytest.approx(np.array([0.0, 0.0, 0.0]))
@@ -475,7 +680,18 @@ def test_point_vtk(point):
 
 
 def test_circular_arcs_parse(carc):
-    assert carc.parameters == []
+    assert strip_params(carc.parameters) == [
+        [
+            "100",
+            "-25.115661529",
+            "0.",
+            "0.",
+            "-29.279537336",
+            "-9.405469593",
+            "-28.792209864",
+            "-10.805684432",
+        ]
+    ]
     assert carc.sequence_number == 19
 
     assert carc.x == pytest.approx(0.0)
@@ -587,7 +803,7 @@ def test_entity_parse(entity):
 
 
 def test_line_parse(line):
-    assert line.parameters == []
+    assert line.parameters == [["110", "0.", "0.", "-997.963013157", "0.", "0.", "2.036986843"]]
     assert line.sequence_number == 333
 
     assert line.coordinates == pytest.approx(
@@ -632,7 +848,23 @@ def test_line_vtk(line):
 
 
 def test_transformation_parse(trafo):
-    assert trafo.parameters == []
+    assert strip_params(trafo.parameters) == [
+        [
+            "124",
+            "1.",
+            "-7.35035671743047E-015",
+            "8.55166289179392E-031",
+            "-2.42609551059902E-030",
+            "-7.35035671743047E-015",
+            "-1.",
+            "6.98296267768627E-015",
+            "-1.98105732386527E-014",
+            "-5.04721003363181E-029",
+            "-6.98296267768627E-015",
+            "-1.",
+            "5.67397368511119",
+        ]
+    ]
     assert trafo.sequence_number == 345
 
     assert trafo.r11 == pytest.approx(1.0)
