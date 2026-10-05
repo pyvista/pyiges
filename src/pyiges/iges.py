@@ -106,13 +106,19 @@ class Iges:
         """
         items = pyvista.MultiBlock()
         for entity in progress(self, desc="Converting entities to vtk"):
-            if isinstance(entity, geometry.RationalBSplineCurve) and bsplines:
+            if (
+                isinstance(entity, geometry.RationalBSplineCurve)
+                and bsplines
+                or isinstance(entity, geometry.RationalBSplineSurface)
+                and surfaces
+            ):
                 items.append(entity.to_vtk(delta))
-            elif isinstance(entity, geometry.RationalBSplineSurface) and surfaces:
-                items.append(entity.to_vtk(delta))
-            elif isinstance(entity, geometry.Line) and lines:
-                items.append(entity.to_vtk())
-            elif isinstance(entity, geometry.Point) and points:
+            elif (
+                isinstance(entity, geometry.Line)
+                and lines
+                or isinstance(entity, geometry.Point)
+                and points
+            ):
                 items.append(entity.to_vtk())
 
         # merge to a single mesh
@@ -305,17 +311,17 @@ class Iges:
                             e = Entity(self)
                         elif entity_type_number == 110:  # Line
                             e = geometry.Line(self)
-                        elif entity_type_number == 112:  # Parametric spline curve
-                            e = Entity(self)
-                        elif entity_type_number == 114:  # Parametric spline surface
+                        elif (
+                            entity_type_number == 112 or entity_type_number == 114
+                        ):  # Parametric spline curve
                             e = Entity(self)
                         elif entity_type_number == 116:  # Point
                             e = geometry.Point(self)
-                        elif entity_type_number == 118:  # Ruled surface
-                            e = Entity(self)
-                        elif entity_type_number == 120:  # Surface of revolution
-                            e = Entity(self)
-                        elif entity_type_number == 122:  # Tabulated cylinder
+                        elif (
+                            entity_type_number == 118
+                            or entity_type_number == 120
+                            or entity_type_number == 122
+                        ):  # Ruled surface
                             e = Entity(self)
                         elif entity_type_number == 124:  # Transformation matrix
                             e = geometry.Transformation(self)
@@ -325,19 +331,12 @@ class Iges:
                             e = geometry.RationalBSplineSurface(self)
 
                         # CSG Entities. See IGES spec v5.3, p. 42, Section 3.3
-                        elif entity_type_number == 150:  # Block
-                            e = Entity(self)
-
-                        # B-Rep entities.  See IGES spec v5.3, p. 43, Section 3.4
-                        elif entity_type_number == 186:
-                            e = Entity(self)
-
-                        # Annotation entities.  See IGES spec v5.3, p. 46, Section 3.5
-                        elif entity_type_number == 202:
-                            e = Entity(self)
-
-                        # Structural entities.  See IGES spec v5.3, p. 50, Section 3.6
-                        elif entity_type_number == 132:
+                        elif (
+                            entity_type_number == 150
+                            or entity_type_number == 186
+                            or entity_type_number == 202
+                            or entity_type_number == 132
+                        ):  # Block
                             e = Entity(self)
                         elif entity_type_number == 502:
                             e = geometry.VertexList(self)
@@ -394,9 +393,7 @@ class Iges:
                         except Exception:
                             print(
                                 "Warning: Could not initialize entity from parameters with Parameter section "
-                                "ending on line {}. Possibly wrong or (yet) unsupported format. Entity will be discarded.".format(
-                                    line_no
-                                )
+                                f"ending on line {line_no}. Possibly wrong or (yet) unsupported format. Entity will be discarded."
                             )
                             entities_to_discard.append(this_entity)
 

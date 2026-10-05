@@ -809,7 +809,6 @@ class Loop(Entity):
 
     def curves(self):
         """Return the list of curves bounding the loop (not yet implemented)."""
-        pass
 
     def __repr__(self):
         """Return a short identifier string for the loop."""

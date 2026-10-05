@@ -10,4 +10,4 @@ try:
 except PackageNotFoundError:
     __version__ = "unknown"
 
-__all__ = ["read", "read_as_mesh", "Iges", "__version__"]
+__all__ = ["Iges", "__version__", "read", "read_as_mesh"]
