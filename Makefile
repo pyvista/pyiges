@@ -10,9 +10,8 @@ deploy_docs: .PHONY
 	make -C docs html deploy
 
 build: test
-	rm dist/*
-	python setup.py bdist_wheel
-	python setup.py sdist
+	rm -f dist/*
+	flit build
 
 upload: build
 	twine upload dist/* --skip-existing

@@ -19,21 +19,27 @@ jobs:
     name: Unit testing
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest]
-        python-version: ['3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        install: ['.[test]', '.[test,full]']
+        include:
+        - os: ubuntu-latest
+          python-version: '3.10'
+          install: .[test,full] pyvista==0.45.*
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Install package
       run: |
-        pip install .[test] --disable-pip-version-check
+        pip install ${{ matrix.install }} --disable-pip-version-check
 
     - name: Unit testing
       run: pytest -v
@@ -55,12 +61,12 @@ jobs:
     permissions:
       id-token: write # this permission is mandatory for trusted publishing
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         persist-credentials: false
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: '3.13'
 

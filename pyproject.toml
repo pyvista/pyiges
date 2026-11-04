@@ -17,7 +17,8 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13"
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
   "tqdm",
@@ -81,11 +82,11 @@ junit_family = 'legacy'
 testpaths = 'tests'
 
 [tool.ruff]
-ignore = ["E722"]
 line-length = 100
 
 [tool.ruff.lint]
 extend-select = ["I", "TID251"]
+ignore = ["E722"]
 
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
 "vtk".msg = "Use PyVista APIs instead of direct VTK imports."
