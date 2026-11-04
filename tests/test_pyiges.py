@@ -925,6 +925,19 @@ def test_to_vtk(impeller):
     assert lines.n_cells
 
 
+@adjust_depending_on_package_variant
+def test_circular_arc_to_vtk_applies_transform(impeller):
+    arc = next(arc for arc in impeller.circular_arcs() if arc.transform is not None)
+    start = arc.transform.to_affine() @ np.array([arc.x1, arc.y1, arc.z, 1.0])
+    assert arc.to_vtk().points[0] == pytest.approx(start[:3], abs=1e-3)
+
+
+@adjust_depending_on_package_variant
+def test_circular_arcs_merge(impeller):
+    merged = impeller.circular_arcs(to_vtk=True, merge=True)
+    assert merged.n_points == sum(arc.to_vtk().n_points for arc in impeller.circular_arcs())
+
+
 @pytest.mark.parametrize(
     "line, expected_separators",
     [

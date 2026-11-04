@@ -3,7 +3,7 @@
 from tqdm import tqdm
 
 from pyiges import geometry
-from pyiges.check_imports import assert_full_module_variant, pyvista, vtkAppendPolyData
+from pyiges.check_imports import assert_full_module_variant, pyvista
 from pyiges.entity import Entity
 
 
@@ -117,12 +117,7 @@ class Iges:
 
         # merge to a single mesh
         if merge:
-            afilter = vtkAppendPolyData()
-            for item in items:
-                afilter.AddInputData(item)
-            afilter.Update()
-
-            return pyvista.wrap(afilter.GetOutput())
+            return pyvista.PolyData().append_polydata(*items)
 
         return items
 
@@ -212,12 +207,7 @@ class Iges:
 
         # merge to a single mesh
         if merge and to_vtk:
-            afilter = vtkAppendPolyData()
-            for item in items:
-                afilter.AddInputData(item)
-            afilter.Update()
-
-            return pyvista.wrap(afilter.GetOutput())
+            return pyvista.PolyData().append_polydata(*items)
 
         return items
 
