@@ -4,7 +4,7 @@ requires = ["flit_core>=3.8.0"]
 
 [project]
 authors = [
-  {name = "PyVista Developers", email = "info@pyvista.org"}
+  { name = "PyVista Developers", email = "info@pyvista.org" }
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -14,11 +14,11 @@ classifiers = [
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX",
   "Operating System :: MacOS",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13"
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
   "tqdm",
@@ -26,10 +26,10 @@ dependencies = [
 ]
 description = "Pythonic IGES reader"
 keywords = ["iges", "cad", "nurbs", "bspline"]
-license = {text = "MIT"}
+license = { text = "MIT" }
 name = "pyiges"
 readme = "README.rst"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 version = "0.4.dev0"
 
 # Requires pyvista >= 0.48
@@ -46,7 +46,7 @@ docs = [
 ]
 full = [
   "geomdl",
-  "pyvista>=0.28.0"
+  "pyvista>=0.45.0"
 ]
 test = [
   "pytest",
@@ -82,8 +82,12 @@ junit_family = 'legacy'
 testpaths = 'tests'
 
 [tool.ruff]
-ignore = ["E722"]
 line-length = 100
 
 [tool.ruff.lint]
-extend-select = ["I"]
+extend-select = ["I", "TID251"]
+ignore = ["E722"]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"vtk".msg = "Use PyVista APIs instead of direct VTK imports."
+"vtkmodules".msg = "Use PyVista APIs instead of direct VTK imports."

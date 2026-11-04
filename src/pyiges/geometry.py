@@ -177,12 +177,7 @@ class Transformation(Entity):
     @assert_full_module_variant
     def _to_vtk(self):
         """Convert to a vtk transformation matrix."""
-        vtkmatrix = pv.vtkmatrix_from_array(self.to_affine())
-        import vtk
-
-        trans = vtk.vtkTransform()
-        trans.SetMatrix(vtkmatrix)
-        return trans
+        return pv.Transform(self.to_affine())
 
 
 class ConicArc(Entity):
@@ -685,7 +680,7 @@ class CircularArc(Entity):
         arc = pv.CircularArc(center=center, pointa=start, pointb=end, resolution=resolution)
         arc.points += [0, 0, self.z]
         if self.transform is not None:
-            arc.transform(self.transform._to_vtk())
+            arc.transform(self.transform._to_vtk(), inplace=True)
 
         return arc
 
